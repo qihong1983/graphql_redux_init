@@ -64,11 +64,6 @@ const userAllow = () => {
 		cnName: "渠道数据",
 		url: "/data"
 	}, {
-		key: "2",
-		value: "manager",
-		cnName: "渠道管理",
-		url: "/manager"
-	}, {
 		key: "3",
 		value: "sys",
 		cnName: "系统管理",

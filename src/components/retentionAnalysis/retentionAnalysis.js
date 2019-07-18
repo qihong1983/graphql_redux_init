@@ -109,34 +109,34 @@ class retentionAnalysis extends React.Component {
 	componentWillMount() {
 		NProgress.start();
 
-		var groupList = {
-			appCode: this.props.retentionAnalysis.appCode,
-			channelGroup: this.props.retentionAnalysis.channelGroup,
-			channelCategory: this.props.retentionAnalysis.channelCategory
-		}
-		this.getChannelGroupList(groupList);
+		// var groupList = {
+		// 	appCode: this.props.retentionAnalysis.appCode,
+		// 	channelGroup: this.props.retentionAnalysis.channelGroup,
+		// 	channelCategory: this.props.retentionAnalysis.channelCategory
+		// }
+		// this.getChannelGroupList(groupList);
 
-		var firmParam = {
-			firm: this.props.retentionAnalysis.firm,
-			brand: ""
-		}
+		// var firmParam = {
+		// 	firm: this.props.retentionAnalysis.firm,
+		// 	brand: ""
+		// }
 
-		this.getFirmList(firmParam);
+		// this.getFirmList(firmParam);
 
-		var tableParam = {
-			appCode: this.props.retentionAnalysis.appCode,
-			channelCategory: this.props.retentionAnalysis.channelCategory,
-			channelGroup: this.props.retentionAnalysis.channelGroup,
-			channelName: this.props.retentionAnalysis.channelName,
-			startDate: this.props.retentionAnalysis.startDate,
-			endDate: this.props.retentionAnalysis.endDate,
-			trendType: this.props.retentionAnalysis.trendType,
-			firm: this.props.retentionAnalysis.firm,
-			brand: this.props.retentionAnalysis.brand,
-			type: this.props.retentionAnalysis.type
-		}
+		// var tableParam = {
+		// 	appCode: this.props.retentionAnalysis.appCode,
+		// 	channelCategory: this.props.retentionAnalysis.channelCategory,
+		// 	channelGroup: this.props.retentionAnalysis.channelGroup,
+		// 	channelName: this.props.retentionAnalysis.channelName,
+		// 	startDate: this.props.retentionAnalysis.startDate,
+		// 	endDate: this.props.retentionAnalysis.endDate,
+		// 	trendType: this.props.retentionAnalysis.trendType,
+		// 	firm: this.props.retentionAnalysis.firm,
+		// 	brand: this.props.retentionAnalysis.brand,
+		// 	type: this.props.retentionAnalysis.type
+		// }
 
-		this.getTables(tableParam);
+		// this.getTables(tableParam);
 
 	}
 

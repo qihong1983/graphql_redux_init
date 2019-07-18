@@ -1,0 +1,267 @@
+{
+    "status": true,
+    "msg": "success",
+    "data": [
+        {
+            "name": "kehumingcheng",
+            "display": "客户名称",
+            "checked": true,
+            "default": true,
+            "type": "string"
+        },
+        {
+            "name": "kehudianhua",
+            "display": "客户电话",
+            "checked": true,
+            "default": true,
+            "type": "string"
+        },
+        {
+            "name": "type",
+            "display": "客户状态",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "潜在客户"
+                },
+                {
+                    "key": 1,
+                    "value": "初步接触"
+                },
+                {
+                    "key": 1,
+                    "value": "持续跟进"
+                },
+                {
+                    "key": 1,
+                    "value": "成交客户"
+                },
+                {
+                    "key": 1,
+                    "value": "忠诚客户"
+                },
+                {
+                    "key": 1,
+                    "value": "无效客户"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "客户分级",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "一类维修厂"
+                },
+                {
+                    "key": 1,
+                    "value": "二类维修厂"
+                },
+                {
+                    "key": 1,
+                    "value": "三类维修厂"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "客户来源",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "线下地推"
+                },
+                {
+                    "key": 1,
+                    "value": "网略推广"
+                },
+                {
+                    "key": 1,
+                    "value": "渠道代理"
+                },
+                {
+                    "key": 1,
+                    "value": "主动联系"
+                },
+                {
+                    "key": 1,
+                    "value": "熟人介绍"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "经营类型",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "快修"
+                },
+                {
+                    "key": 1,
+                    "value": "综合"
+                },
+                {
+                    "key": 1,
+                    "value": "轮胎"
+                },
+                {
+                    "key": 1,
+                    "value": "专修"
+                },
+                {
+                    "key": 1,
+                    "value": "4S店"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "经营主体",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "公司"
+                },
+                {
+                    "key": 1,
+                    "value": "个人"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "认证状态",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "已认证"
+                },
+                {
+                    "key": 1,
+                    "value": "未认证"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "客户性质",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "个人客户"
+                },
+                {
+                    "key": 1,
+                    "value": "企业客户"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "重要程度",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "一星"
+                },
+                {
+                    "key": 1,
+                    "value": "二星"
+                },
+                {
+                    "key": 1,
+                    "value": "三星"
+                },
+                {
+                    "key": 1,
+                    "value": "四星"
+                },
+                {
+                    "key": 1,
+                    "value": "五星"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "省",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "北京"
+                },
+                {
+                    "key": 1,
+                    "value": "吉林"
+                },
+                {
+                    "key": 1,
+                    "value": "辽宁"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "市",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "长春市"
+                },
+                {
+                    "key": 1,
+                    "value": "吉林市"
+                }
+            ]
+        },
+        {
+            "name": "type",
+            "display": "区",
+            "checked": true,
+            "default": true,
+            "type": "enum",
+            "enums": [
+                {
+                    "key": 1,
+                    "value": "宽城区"
+                },
+                {
+                    "key": 1,
+                    "value": "朝阳区"
+                }
+            ]
+        }
+    ]
+}

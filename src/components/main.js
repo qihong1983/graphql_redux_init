@@ -7,7 +7,9 @@ import {
   Icon,
   Affix,
   BackTop,
-  LocaleProvider
+  LocaleProvider,
+  Avatar,
+  Tooltip
 } from 'antd';
 
 
@@ -47,11 +49,6 @@ export default class Main extends React.Component {
       cnName: "渠道数据",
       url: "/data"
     }, {
-      key: "2",
-      value: "manager",
-      cnName: "渠道管理",
-      url: "/manager"
-    }, {
       key: "3",
       value: "sys",
       cnName: "系统管理",
@@ -69,8 +66,8 @@ export default class Main extends React.Component {
       list.map((av, ak) => {
         if (v == av.key) {
           arr.push(<Menu.Item key={av.value}>
-              <IndexLink to={av.url} activeClassName="active">{av.cnName}</IndexLink>
-            </Menu.Item>)
+            <IndexLink to={av.url} activeClassName="active">{av.cnName}</IndexLink>
+          </Menu.Item>)
         }
       });
     });
@@ -88,33 +85,37 @@ export default class Main extends React.Component {
 
 
     return (<LocaleProvider locale={zh_CN}>
-      <Layout style={{position: "relative"}}>
-     <Affix style={{position: "fixed", width:"100%",zIndex: 3, height: 60}}>
-    <Header className="header" id="components-layout-demo-top-side" >
-{/*<Affix style={{   width:"100%",zIndex: 1, height: 60}}>*/}
-      <div className="logo" />
-       
-      <Menu
-        theme="dark"
-        mode="horizontal"
-         selectedKeys={this.props.location.pathname.split("/")}
-        style={{ lineHeight: '60px' }}
-      >
-        {topNavList}
-      </Menu>
-    
-      <div className="header-user">
-            <span className="userName">{window.userInfo.data.name}</span> | <a href="javascript:void(0);" onClick={this.clickLogout.bind(this)} className="logout">退出</a>
-      </div>
-        {/*</Affix>*/}
-    </Header>
-     </Affix>
-    {this.props.children}
-    <BackTop>
-      <div className="ant-back-top-inner"><Icon type="arrow-up" /></div>
-    </BackTop>
-    {/*<Footer style={{backgroundColor:'white'}}>footer</Footer>*/}
-  </Layout>
-  </LocaleProvider>);
+      <Layout style={{ position: "relative" }}>
+        <Affix style={{ position: "fixed", width: "100%", zIndex: 3, height: 60 }}>
+          <Header className="header" id="components-layout-demo-top-side" >
+            {/*<Affix style={{   width:"100%",zIndex: 1, height: 60}}>*/}
+            <div className="logo"> CRM Logo </div>
+
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              selectedKeys={this.props.location.pathname.split("/")}
+              style={{ lineHeight: '60px' }}
+            >
+              {/*topNavList */}
+            </Menu>
+
+            <div className="header-user">
+              <Tooltip placement="bottom" title={'小洪'}>
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              </Tooltip>
+
+              | <a href="javascript:void(0);" onClick={this.clickLogout.bind(this)} className="logout">退出</a>
+            </div>
+            {/*</Affix>*/}
+          </Header>
+        </Affix>
+        {this.props.children}
+        <BackTop visibilityHeight={100}>
+          <div className="ant-back-top-inner"><Icon type="arrow-up" /></div>
+        </BackTop>
+        {/*<Footer style={{backgroundColor:'white'}}>footer</Footer>*/}
+      </Layout>
+    </LocaleProvider>);
   }
 }

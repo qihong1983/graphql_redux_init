@@ -214,9 +214,6 @@ class EditUser extends React.Component {
 			label: '渠道数据',
 			value: 1
 		}, {
-			label: '渠道管理',
-			value: 2
-		}, {
 			label: '系统管理',
 			value: 3
 		}, {

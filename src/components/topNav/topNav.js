@@ -5,7 +5,8 @@ import {
 	Menu,
 	Breadcrumb,
 	Icon,
-	Affix
+	Affix,
+	Avatar
 } from 'antd';
 
 const {
@@ -61,11 +62,6 @@ class topNav extends React.Component {
 			cnName: "渠道数据",
 			url: "/data"
 		}, {
-			key: "2",
-			value: "manager",
-			cnName: "渠道管理",
-			url: "/manager"
-		}, {
 			key: "3",
 			value: "sys",
 			cnName: "系统管理",
@@ -83,8 +79,8 @@ class topNav extends React.Component {
 			list.map((av, ak) => {
 				if (v == av.key) {
 					arr.push(<Menu.Item key={av.value}>
-							<IndexLink to={av.url} activeClassName="active">{av.cnName}</IndexLink>
-						</Menu.Item>)
+						<IndexLink to={av.url} activeClassName="active">{av.cnName}</IndexLink>
+					</Menu.Item>)
 				}
 			});
 		});
@@ -107,31 +103,33 @@ class topNav extends React.Component {
 		return (
 			<Affix offsetTop={120} >
 
-			<Header className = "header" >
+				<Header className="header" >
 
 
 
-			<div className="logo" /> <
-			Menu theme = "dark"
-			mode = "horizontal"
-			defaultSelectedKeys = {
-				[this.props.value]
-			}
-			style = {
-				{
-					lineHeight: '64px',
-					float: "left",
-					marginLeft: "30%"
-				}
-			} >
-			{
-				topNavList
-			} 
-			</Menu> 
-			<div className = "header-user" >
-			<span className="userName">{window.userInfo.data.name}</span> | <a href="javascript:void(0);" onClick={this.clickLogout.bind(this)} className="logout">退出</a> 
-			</div> 
-			</Header>
+					<div className="logo" /> <
+						Menu theme="dark"
+						mode="horizontal"
+						defaultSelectedKeys={
+							[this.props.value]
+						}
+						style={
+							{
+								lineHeight: '64px',
+								float: "left",
+								marginLeft: "30%"
+							}
+						} >
+						{
+							topNavList
+						}
+					</Menu>
+					<div className="header-user" data-id='1' >
+
+						<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+						<span className="userName">{window.userInfo.data.name}</span> | <a href="javascript:void(0);" onClick={this.clickLogout.bind(this)} className="logout">退出</a>
+					</div>
+				</Header>
 			</Affix>
 
 		);
