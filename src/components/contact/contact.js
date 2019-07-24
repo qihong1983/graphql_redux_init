@@ -101,21 +101,44 @@ import {
     addKey
 } from '../../common/utils';
 
-import * as actionCreators from '../../actions/allTrend/allTrend';
+// import * as actionCreators from '../../actions/allTrend/allTrend';
 
 const footer = () => 'Here is footer';
 
+import CreateContact from './createContact';
+
+
+import CustomerDrawer from '../customer/customerDrawer';
+import ContactDrawer from './contactDrawer';
+
+
+import SetParamList from './setParamList';
+
+import SetSelectParam from './setSelectParam';
+
+import MoreEdit from './moreEdit';
 
 function onShowSizeChange(current, pageSize) {
     console.log(current, pageSize);
 }
+
+
 class Contact extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            isQuery: true
+            isQuery: true,
+            newCustomer: false,
+            drawerVisible: false,
+            drawerVisible: false,
+            //联系人 -- 列表字段控制显示隐藏
+            paramsListVisible: false,
+            //联系人 -- 筛选设置 
+            setSelectVisible: false,
+            //客户管理 -- 点击批量编辑
+            moreEditVisible: false
         }
 
     }
@@ -162,6 +185,8 @@ class Contact extends React.Component {
 
 
             <Row gutter={24}>
+
+
                 <Col span={10} >
                     <Form layout="inline" className="clearfix">
                         <FormItem label="已选">
@@ -169,8 +194,8 @@ class Contact extends React.Component {
 
 				</FormItem>
                         <FormItem label="批量">
-                            <Button style={{ marginRight: "10px" }}>编辑</Button>
-                            <Button>删除</Button>
+                            <Button type="default" style={{ marginRight: "10px" }} onClick={this.onClickMoreEdit.bind(this)}>编辑</Button>
+                            <Button type="default" onClick={this.onClickMoreDelete.bind(this)}>删除</Button>
 
                         </FormItem>
                     </Form>
@@ -188,6 +213,204 @@ class Contact extends React.Component {
         )
     }
 
+	/**
+	 *  新建客户 -- 打开
+	 * @method newCustomer
+	 */
+    newCustomer() {
+        this.setState({
+            newCustomer: true
+        });
+    }
+
+	/**
+	 * 新建客户 -- 确认新建客户
+	 * @method newCustomerOk
+	 */
+    newCustomerOk(data) {
+        console.log('确认新建客户');
+        this.setState({
+            newCustomer: data
+        });
+    }
+
+	/**
+	 * 新建客户 -- 取消新建客户
+	 * @method newCustomerCannel
+	 */
+    newCustomerCannel(data) {
+        console.log('取消新建客户');
+        this.setState({
+            newCustomer: data
+        });
+    }
+
+
+	/**
+	 * 新建客户端  -- 刷新列表
+	 * @method refreshTable
+	 */
+    refreshTable() {
+        console.log('刷新列表');
+    }
+
+    /**
+     * 客户管理-- 详情
+     * @method onCloseDrawer
+     */
+    onCloseDrawer() {
+        this.setState({
+            drawerVisible: false
+        });
+    }
+
+    /**
+     * 联系人 -- 详情
+     * @method onCloseDrawerContact
+     */
+    onCloseDrawerContact() {
+        this.setState({
+            drawerContactVisible: false
+        });
+    }
+
+
+    /**
+     * 联系人  -- 详情
+     */
+    openDrawerContact() {
+        this.setState({
+            drawerContactVisible: true
+        });
+    }
+
+    /**
+     * 客户管理 -- 打开详情
+     */
+    openDrawer() {
+        this.setState({
+            drawerVisible: true
+        });
+    }
+
+
+
+	/**
+	 * 客户管理 --点击列表字段设置
+	 * @method setParamList
+	 * @param {Object} e 
+	 */
+    setParamList(e) {
+        this.setState({
+            paramsListVisible: true
+        });
+    }
+
+
+	/**
+	 * 客户管理 -- 列表字段设置 -- 确认
+	 * @method paramsListOk
+	 */
+    paramsListOk() {
+        this.setState({
+            paramsListVisible: false
+        });
+    }
+
+	/**
+	 * 客户管理 -- 列表字段设置 -- 取消
+	 * @method paramsListCancel
+ 	 */
+    paramsListCancel() {
+
+        console.log('这里显示了吗');
+        this.setState({
+            paramsListVisible: false
+        });
+    }
+
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 打开
+	 */
+    setSelectOpen() {
+
+        console.log('这里执行了吗');
+        this.setState({
+            setSelectVisible: true
+        });
+    }
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 提交
+	 */
+    setSelectOk() {
+        this.setState({
+            setSelectVisible: false
+        });
+    }
+
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 取消
+	 */
+    setSelectCancel() {
+        this.setState({
+            setSelectVisible: false
+        });
+    }
+
+
+    /**
+ * 客户管理 -- 批量点击确定
+ */
+    moreEditOk() {
+        this.setState({
+            moreEditVisible: false
+        });
+    }
+
+
+	/**
+	 * 客户管理 -- 批量点击取消
+	 */
+    moreEditCancel() {
+        this.setState({
+            moreEditVisible: false
+        });
+    }
+
+
+    /**
+     * 点击批量编辑
+     * @method onClickMoreEdit
+     */
+    onClickMoreEdit(e) {
+        this.setState({
+            moreEditVisible: true
+        });
+    }
+
+    moreDeleteOk() {
+        console.log('确定');
+    }
+
+
+    /**
+ * 点击批量删除
+ * @method onClickMoreDelete
+ */
+    onClickMoreDelete(e) {
+        Modal.warning({
+            title: '确定要删除吗',
+            content: '确定要删除吗',
+            okText: '删除',
+            onOk: () => {
+                console.log('111');
+            }
+        });
+    }
+
     render() {
 
         const {
@@ -203,7 +426,7 @@ class Contact extends React.Component {
                 key: 'c1',
                 render: (title) => {
                     return (
-                        <a href="#">{title}</a>
+                        <a href="#" onClick={this.openDrawerContact.bind(this)}>{title}</a>
                     )
                 }
             },
@@ -214,7 +437,7 @@ class Contact extends React.Component {
                 key: 'c2',
                 render: (title) => {
                     return (
-                        <a href="#">{title}</a>
+                        <a href="#" onClick={this.openDrawer.bind(this)}>{title}</a>
                     )
                 }
             },
@@ -283,12 +506,75 @@ class Contact extends React.Component {
 
         return (
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
+
+                {/* 批量编辑开始 */}
+                <MoreEdit
+                    moreEditVisible={this.state.moreEditVisible}
+                    moreEditOk={this.moreEditOk.bind(this)}
+                    moreEditCancel={this.moreEditCancel.bind(this)}
+                />
+                {/* 批量编辑结束 */}
+
+                {/**
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+                <CreateContact
+                    show={this.state.newCustomer}
+                    newCustomerOk={this.newCustomerOk.bind(this)}
+                    newCustomerCannel={this.newCustomerCannel.bind(this)}
+                    refreshTable={this.refreshTable.bind(this)}
+                />
+
+
+                {/**
+				  * 抽屉--客户详情
+				  */}
+
+                <CustomerDrawer
+                    onCloseDrawer={this.onCloseDrawer.bind(this)}
+                    drawerVisible={this.state.drawerVisible}
+                />
+
+                {/**
+                 * 抽屉--联系人
+                 */}
+                <ContactDrawer
+                    onCloseDrawer={this.onCloseDrawerContact.bind(this)}
+                    drawerVisible={this.state.drawerContactVisible}
+                />
+
+
+                {/* 列表字段设置开始 */}
+
+
+                <SetParamList
+                    paramsListVisible={this.state.paramsListVisible}
+                    paramsListOk={this.paramsListOk.bind(this)}
+                    paramsListCancel={this.paramsListCancel.bind(this)}
+                />
+
+
+                {/* 列表字段设置结束 */}
+
+                {/* 筛选项设置开始 */}
+
+                <SetSelectParam
+                    paramsListVisible={this.state.setSelectVisible}
+                    paramsListOk={this.setSelectOk.bind(this)}
+                    paramsListCancel={this.setSelectCancel.bind(this)}
+                />
+
+                {/* 筛选项设置结束 */}
+
                 { /*筛选区域开始*/}
                 <Content className="channel_filter">
                     <Form layout="inline" className="clearfix">
-                        <FormItem label="" className="pull-right"  >
+                        <FormItem label="" className="pull-right mrn"  >
                             {/*查询开始*/}
-                            <Button type="primary" size={"default"}>新建联系人</Button>
+                            <Button type="primary" size={"default"} onClick={this.newCustomer.bind(this)}>新建联系人</Button>
                             {/*查询结束*/}
                         </FormItem>
                     </Form>
@@ -405,68 +691,25 @@ class Contact extends React.Component {
                                 {/*微信群名结束*/}
 
 
-
-
-
-
-
-
-
-
-
-
-                                {/*省开始*/}
-                                <FormItem label="省">
+                                {/*决策关系开始*/}
+                                <FormItem label="决策关系">
                                     <Select
-                                        placeholder="省选择"
+                                        placeholder="决策关系选择"
                                         dropdownMatchSelectWidth={true}
                                         value={"1"}
                                         className="online"
                                     >
-                                        <Option value="1">北京</Option>
-                                        <Option value="2">吉林</Option>
-                                        <Option value="3">辽宁</Option>
-                                        <Option value="3">上海</Option>
-                                        <Option value="3">深圳</Option>
+                                        <Option value="1">关键决策人</Option>
+                                        <Option value="2">分项决策人</Option>
+                                        <Option value="3">商务决策人</Option>
+                                        <Option value="3">技术决策人</Option>
+                                        <Option value="3">财务决策人</Option>
+                                        <Option value="3">使用人</Option>
+                                        <Option value="3">意见影响人</Option>
+                                        <Option value="3">普通人</Option>
                                     </Select>
                                 </FormItem>
-                                {/*省结束*/}
-
-
-                                {/*省开始*/}
-                                <FormItem label="市">
-                                    <Select
-                                        placeholder="市选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">北京</Option>
-                                        <Option value="2">吉林</Option>
-                                        <Option value="3">辽宁</Option>
-                                        <Option value="3">上海</Option>
-                                        <Option value="3">深圳</Option>
-                                    </Select>
-                                </FormItem>
-                                {/*市结束*/}
-
-
-                                {/*区开始*/}
-                                <FormItem label="区">
-                                    <Select
-                                        placeholder="区选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">北京</Option>
-                                        <Option value="2">吉林</Option>
-                                        <Option value="3">辽宁</Option>
-                                        <Option value="3">上海</Option>
-                                        <Option value="3">深圳</Option>
-                                    </Select>
-                                </FormItem>
-                                {/*区结束*/}
+                                {/*决策关系结束*/}
 
 
                             </Form>
@@ -476,7 +719,7 @@ class Contact extends React.Component {
                         <Col span={2} >
                             <FormItem label="" className="pull-right">
                                 {/* <Button type="dashed" >筛选设置</Button> */}
-                                <Button type="dashed" >筛选设置</Button>
+                                <Button type="dashed" onClick={this.setSelectOpen.bind(this)}>筛选设置</Button>
                             </FormItem>
                         </Col>
                     </Row>
@@ -485,7 +728,7 @@ class Contact extends React.Component {
 
                 { /*图表模块开始*/}
                 <Content className="channel_charts">
-                    <Card extra={<Button type="dashed"> 列表字段设置</Button>}>
+                    <Card extra={<Button type="dashed" onClick={this.setParamList.bind(this)}> 列表字段设置</Button>}>
                         <Spin spinning={false}>
                             {/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 2200, y: 300 }} /> */}
                             <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 1200, y: 300 }} pagination={false} />

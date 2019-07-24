@@ -231,6 +231,17 @@ const EditUser = (location, cb) => {
 	}, 'editUser')
 }
 
+// 用户管理 -- 用户列表 -- 修改用户
+const Login = (location, cb) => {
+	require.ensure([], require => {
+		cb(null,
+			require('../components/login/login').default
+		)
+	}, 'login')
+}
+
+
+
 
 // 没有权限 
 const NoAllow = (location, cb) => {
@@ -359,8 +370,14 @@ export default class Routers extends React.Component {
 		return (
 			<div>
 				<Router history={this.props.history}>
+					<Route path="login" getComponent={Login} >
+
+					</Route>
+
 					<Route path="/" component={Main}>
 						<IndexRedirect to="data" />
+
+
 
 						{/*渠道数据开始*/}
 						<Route path="data" component={DataLeftNav} onEnter={

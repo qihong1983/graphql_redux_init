@@ -101,9 +101,18 @@ import {
     addKey
 } from '../../common/utils';
 
-import * as actionCreators from '../../actions/allTrend/allTrend';
+// import * as actionCreators from '../../actions/allTrend/allTrend';
 
-const footer = () => 'Here is footer';
+
+import * as actionCreators from '../../actions/mainbody/mainbody';
+
+
+
+import CreateMainBody from './createMainBody';
+
+import MainBodyDrawer from './mainBodyDrawer';
+
+import MoreEdit from './moreEdit';
 
 
 function onShowSizeChange(current, pageSize) {
@@ -115,7 +124,14 @@ class MainBody extends React.Component {
         super(props);
 
         this.state = {
-            isQuery: true
+            isQuery: true,
+            //公司
+            newCustomer: false,
+            //个人
+            newCustomerPerson: false,
+            mainBodyType: 1,
+            drawerVisible: false,
+            moreEditVisible: false
         }
 
     }
@@ -127,7 +143,10 @@ class MainBody extends React.Component {
     componentDidMount() {
         NProgress.done();
 
+        // 假如
+        this.props.getSelectParam();
 
+        console.log(this.props, 'this.props');
     }
 
     displayAuthhors() {
@@ -169,9 +188,8 @@ class MainBody extends React.Component {
 
 				</FormItem>
                         <FormItem label="批量">
-                            <Button style={{ marginRight: "10px" }}>编辑</Button>
-                            <Button>删除</Button>
-
+                            <Button type="default" style={{ marginRight: "10px" }} onClick={this.onClickMoreEdit.bind(this)}>编辑</Button>
+                            <Button type="default" onClick={this.onClickMoreDelete.bind(this)}>删除</Button>
                         </FormItem>
                     </Form>
                 </Col>
@@ -186,6 +204,233 @@ class MainBody extends React.Component {
                 </Col>
             </Row>
         )
+    }
+
+    /**
+     * 点击批量删除
+     * @method onClickMoreDelete
+     */
+    onClickMoreDelete(e) {
+        Modal.warning({
+            title: '确定要删除吗',
+            content: '确定要删除吗',
+            okText: '删除',
+            onOk: () => {
+                console.log('111');
+            }
+        });
+    }
+
+    /**
+     * 客户管理 -- 批量点击确定
+     */
+    moreEditOk() {
+        this.setState({
+            moreEditVisible: false
+        });
+    }
+
+
+    /**
+     * 客户管理 -- 批量点击取消
+     */
+    moreEditCancel() {
+        this.setState({
+            moreEditVisible: false
+        });
+    }
+
+    /**
+ * 点击批量编辑
+ * @method onClickMoreEdit
+ */
+    onClickMoreEdit(e) {
+        this.setState({
+            moreEditVisible: true
+        });
+    }
+
+	/**
+	 *  新建客户 -- 打开
+	 * @method newCustomer
+	 */
+    newCustomer() {
+        this.setState({
+            newCustomer: true
+        });
+    }
+
+    /**
+	 * 新建客户 -- 确认新建客户
+	 * @method newCustomerOk
+	 */
+    newCustomerOk(data) {
+        console.log('确认新建客户');
+        this.setState({
+            newCustomer: data
+        });
+    }
+
+	/**
+	 * 新建客户 -- 取消新建客户
+	 * @method newCustomerCannel
+	 */
+    newCustomerCannel(data) {
+        console.log('取消新建客户');
+        this.setState({
+            newCustomer: data
+        });
+    }
+
+    /**
+     * 新建客户端  -- 刷新列表
+     * @method refreshTable
+     */
+    refreshTable() {
+        console.log('刷新列表');
+    }
+
+    onCloseDrawer() {
+        this.setState({
+            drawerVisible: false
+        });
+    }
+
+    openDrawer() {
+        this.setState({
+            drawerVisible: true
+        });
+    }
+
+    renderSelectParams() {
+
+
+        const {
+            getFieldDecorator
+        } = this.props.form;
+
+        console.log(this.props.mainBody.selectParam, 'selectParam');
+        if (this.props.mainBody.selectParam.length != 0) {
+
+        }
+        return (<Form layout="inline">
+
+
+            {/*经营主体开始*/}
+            <FormItem label="经营主体">
+                <Select
+                    placeholder="经营主体选择"
+                    dropdownMatchSelectWidth={true}
+                    value={"1"}
+                    className="online"
+                >
+                    <Option value="1">公司</Option>
+                    <Option value="2">个人</Option>
+                </Select>
+            </FormItem>
+            {/*经营主体结束*/}
+
+            {/*公司名称/个人开始*/}
+            <FormItem label="公司名称/个人开始">
+                {getFieldDecorator('reduce', {
+
+                })(
+                    <Input />
+                )}
+            </FormItem>
+            {/*公司名称/个人开始*/}
+
+
+            {/*税号/身份证号开始*/}
+            <FormItem label="税号/身份证号">
+                {getFieldDecorator('reduce', {
+
+                })(
+                    <Input />
+                )}
+            </FormItem>
+            {/*税号/身份证号结束*/}
+            {/*联系电话开始*/}
+            <FormItem label="联系电话">
+                {getFieldDecorator('reduce', {
+
+                })(
+                    <Input />
+                )}
+            </FormItem>
+            {/*联系电话结束*/}
+
+
+            {/*是否为集团总公司开始*/}
+            <FormItem label="客户状态">
+                <Select
+                    placeholder="客户状态选择"
+                    dropdownMatchSelectWidth={true}
+                    value={"1"}
+                    className="online"
+                >
+                    <Option value="1">是</Option>
+                    <Option value="2">否</Option>
+                </Select>
+            </FormItem>
+            {/*是否为集团总公司结束*/}
+
+
+
+            {/*省开始*/}
+            <FormItem label="省">
+                <Select
+                    placeholder="省选择"
+                    dropdownMatchSelectWidth={true}
+                    value={"1"}
+                    className="online"
+                >
+                    <Option value="1">北京</Option>
+                    <Option value="2">吉林</Option>
+                    <Option value="3">辽宁</Option>
+                    <Option value="3">上海</Option>
+                    <Option value="3">深圳</Option>
+                </Select>
+            </FormItem>
+            {/*省结束*/}
+
+
+            {/*省开始*/}
+            <FormItem label="市">
+                <Select
+                    placeholder="市选择"
+                    dropdownMatchSelectWidth={true}
+                    value={"1"}
+                    className="online"
+                >
+                    <Option value="1">北京</Option>
+                    <Option value="2">吉林</Option>
+                    <Option value="3">辽宁</Option>
+                    <Option value="3">上海</Option>
+                    <Option value="3">深圳</Option>
+                </Select>
+            </FormItem>
+            {/*市结束*/}
+
+
+            {/*区开始*/}
+            <FormItem label="区">
+                <Select
+                    placeholder="区选择"
+                    dropdownMatchSelectWidth={true}
+                    value={"1"}
+                    className="online"
+                >
+                    <Option value="1">北京</Option>
+                    <Option value="2">吉林</Option>
+                    <Option value="3">辽宁</Option>
+                    <Option value="3">上海</Option>
+                    <Option value="3">深圳</Option>
+                </Select>
+            </FormItem>
+            {/*区结束*/}
+
+        </Form>)
     }
 
     render() {
@@ -203,7 +448,7 @@ class MainBody extends React.Component {
                 key: 'c1',
                 render: (title) => {
                     return (
-                        <a href="#">{title}</a>
+                        <a href="#" onClick={this.openDrawer.bind(this)}>{title}</a>
                     )
                 }
             },
@@ -284,12 +529,53 @@ class MainBody extends React.Component {
 
         return (
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
+
+                {/* 批量编辑开始 */}
+                <MoreEdit
+                    moreEditVisible={this.state.moreEditVisible}
+                    moreEditOk={this.moreEditOk.bind(this)}
+                    moreEditCancel={this.moreEditCancel.bind(this)}
+                />
+                {/* 批量编辑结束 */}
+
+                {/* 新建经营主体开始 */}
+
+                {/**
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+                <CreateMainBody
+                    show={this.state.newCustomer}
+                    newCustomerOk={this.newCustomerOk.bind(this)}
+                    newCustomerCannel={this.newCustomerCannel.bind(this)}
+                    refreshTable={this.refreshTable.bind(this)}
+                    mainBodyType={this.state.mainBodyType}
+                />
+
+                {/* <CreateMainBodyPerson
+                    show={this.state.newCustomerPerson}
+                    newCustomerOk={this.newCustomerPersonOk.bind(this)}
+                    newCustomerCannel={this.newCustomerCannel.bind(this)}
+                /> */}
+
+                {/**
+                 * 抽屉--联系人
+                 */}
+                <MainBodyDrawer
+                    onCloseDrawer={this.onCloseDrawer.bind(this)}
+                    drawerVisible={this.state.drawerVisible}
+                />
+
+                {/* 新建经营主体结束 */}
+
                 { /*筛选区域开始*/}
                 <Content className="channel_filter">
                     <Form layout="inline" className="clearfix">
-                        <FormItem label="" className="pull-right"  >
+                        <FormItem label="" className="pull-right mrn"  >
                             {/*新建开始*/}
-                            <Button type="primary" size={"default"}>新建经营主体</Button>
+                            <Button type="primary" size={"default"} onClick={this.newCustomer.bind(this)}>新建经营主体</Button>
                             {/*新建结束*/}
                         </FormItem>
                     </Form>
@@ -298,124 +584,7 @@ class MainBody extends React.Component {
                 { /*图表模块开始*/}
                 <Content className="crm_filter">
 
-                    <Form layout="inline">
-
-
-                        {/*经营主体开始*/}
-                        <FormItem label="经营主体">
-                            <Select
-                                placeholder="经营主体选择"
-                                dropdownMatchSelectWidth={true}
-                                value={"1"}
-                                className="online"
-                            >
-                                <Option value="1">公司</Option>
-                                <Option value="2">个人</Option>
-                            </Select>
-                        </FormItem>
-                        {/*经营主体结束*/}
-
-                        {/*公司名称/个人开始*/}
-                        <FormItem label="公司名称/个人开始">
-                            {getFieldDecorator('reduce', {
-
-                            })(
-                                <Input />
-                            )}
-                        </FormItem>
-                        {/*公司名称/个人开始*/}
-
-
-                        {/*税号/身份证号开始*/}
-                        <FormItem label="税号/身份证号">
-                            {getFieldDecorator('reduce', {
-
-                            })(
-                                <Input />
-                            )}
-                        </FormItem>
-                        {/*税号/身份证号结束*/}
-                        {/*联系电话开始*/}
-                        <FormItem label="联系电话">
-                            {getFieldDecorator('reduce', {
-
-                            })(
-                                <Input />
-                            )}
-                        </FormItem>
-                        {/*联系电话结束*/}
-
-
-                        {/*是否为集团总公司开始*/}
-                        <FormItem label="客户状态">
-                            <Select
-                                placeholder="客户状态选择"
-                                dropdownMatchSelectWidth={true}
-                                value={"1"}
-                                className="online"
-                            >
-                                <Option value="1">是</Option>
-                                <Option value="2">否</Option>
-                            </Select>
-                        </FormItem>
-                        {/*是否为集团总公司结束*/}
-
-
-
-                        {/*省开始*/}
-                        <FormItem label="省">
-                            <Select
-                                placeholder="省选择"
-                                dropdownMatchSelectWidth={true}
-                                value={"1"}
-                                className="online"
-                            >
-                                <Option value="1">北京</Option>
-                                <Option value="2">吉林</Option>
-                                <Option value="3">辽宁</Option>
-                                <Option value="3">上海</Option>
-                                <Option value="3">深圳</Option>
-                            </Select>
-                        </FormItem>
-                        {/*省结束*/}
-
-
-                        {/*省开始*/}
-                        <FormItem label="市">
-                            <Select
-                                placeholder="市选择"
-                                dropdownMatchSelectWidth={true}
-                                value={"1"}
-                                className="online"
-                            >
-                                <Option value="1">北京</Option>
-                                <Option value="2">吉林</Option>
-                                <Option value="3">辽宁</Option>
-                                <Option value="3">上海</Option>
-                                <Option value="3">深圳</Option>
-                            </Select>
-                        </FormItem>
-                        {/*市结束*/}
-
-
-                        {/*区开始*/}
-                        <FormItem label="区">
-                            <Select
-                                placeholder="区选择"
-                                dropdownMatchSelectWidth={true}
-                                value={"1"}
-                                className="online"
-                            >
-                                <Option value="1">北京</Option>
-                                <Option value="2">吉林</Option>
-                                <Option value="3">辽宁</Option>
-                                <Option value="3">上海</Option>
-                                <Option value="3">深圳</Option>
-                            </Select>
-                        </FormItem>
-                        {/*区结束*/}
-
-                    </Form>
+                    {this.renderSelectParams()}
 
                 </Content>
                 {/*图表模块结束*/}
@@ -439,24 +608,24 @@ class MainBody extends React.Component {
 
 
 //将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+const mapStateToProps = (state) => {
+    return {
+        mainBody: state.Reducer.mainBody
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 MainBody = Form.create()(MainBody);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(MainBody)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(MainBody)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(MainBody);

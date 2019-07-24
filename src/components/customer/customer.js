@@ -37,10 +37,13 @@ import {
 	Row,
 	Upload,
 	Col,
+	Drawer,
 	Divider,
 	notification,
 	Modal,
 	Card,
+	Transfer,
+	Switch,
 	Input,
 	LocaleProvider
 } from 'antd';
@@ -94,6 +97,9 @@ import moment from 'moment';
 
 import NProgress from 'nprogress';
 
+import CreateCustomer from './createCustomer';
+import CustomerDrawer from './customerDrawer';
+
 const dateFormat = 'YYYY-MM-DD';
 const monthFormat = 'YYYY-MM';
 
@@ -103,7 +109,14 @@ import {
 	addKey
 } from '../../common/utils';
 
-import * as actionCreators from '../../actions/allTrend/allTrend';
+
+
+import SetParamList from './setParamList';
+
+import SetSelectParam from './setSelectParam';
+
+import MoreEdit from './moreEdit';
+
 
 const footer = () => 'Here is footer';
 
@@ -111,6 +124,10 @@ const footer = () => 'Here is footer';
 function onShowSizeChange(current, pageSize) {
 	console.log(current, pageSize);
 }
+
+
+
+
 class Customer extends React.Component {
 
 	constructor(props) {
@@ -119,8 +136,19 @@ class Customer extends React.Component {
 		this.state = {
 			isQuery: true,
 			//新建客户
-			newCustomer: false
+			newCustomer: false,
+			//抽屉
+			drawerVisible: false,
+			//客户管理 -- 列表字段控制显示隐藏
+			paramsListVisible: false,
+			//客户管理 -- 筛选设置 
+			setSelectVisible: false,
+			//客户管理 -- 点击批量编辑
+			moreEditVisible: false,
+			//客户管理 -- 点击批量编辑
+			moreDeleteVisible: false
 		}
+
 
 	}
 
@@ -160,10 +188,41 @@ class Customer extends React.Component {
 		}
 	}
 
+	/**
+	 * 点击批量编辑
+	 * @method onClickMoreEdit
+	 */
+	onClickMoreEdit(e) {
+		this.setState({
+			moreEditVisible: true
+		});
+	}
+
+	moreDeleteOk() {
+		console.log('确定');
+	}
+
+	/**
+	 * 点击批量删除
+	 * @method onClickMoreDelete
+	 */
+	onClickMoreDelete(e) {
+		Modal.warning({
+			title: '确定要删除吗',
+			content: '确定要删除吗',
+			okText: '删除',
+			onOk: () => {
+				console.log('111');
+			}
+		});
+	}
+
+
+
+
+
 	tableFooter() {
 		return (
-
-
 
 			<Row gutter={24}>
 				<Col span={10} >
@@ -173,8 +232,8 @@ class Customer extends React.Component {
 
 						</FormItem>
 						<FormItem label="批量">
-							<Button style={{ marginRight: "10px" }}>编辑</Button>
-							<Button>删除</Button>
+							<Button type="default" style={{ marginRight: "10px" }} onClick={this.onClickMoreEdit.bind(this)}>编辑</Button>
+							<Button type="default" onClick={this.onClickMoreDelete.bind(this)}>删除</Button>
 						</FormItem>
 					</Form>
 				</Col>
@@ -193,6 +252,14 @@ class Customer extends React.Component {
 	}
 
 	/**
+	 * 新建客户端  -- 刷新列表
+	 * @method refreshTable
+	 */
+	refreshTable() {
+		console.log('刷新列表');
+	}
+
+	/**
 	 *  新建客户 -- 打开
 	 * @method newCustomer
 	 */
@@ -206,10 +273,10 @@ class Customer extends React.Component {
 	 * 新建客户 -- 确认新建客户
 	 * @method newCustomerOk
 	 */
-	newCustomerOk(e) {
+	newCustomerOk(data) {
 		console.log('确认新建客户');
 		this.setState({
-			newCustomer: false
+			newCustomer: data
 		});
 	}
 
@@ -217,10 +284,10 @@ class Customer extends React.Component {
 	 * 新建客户 -- 取消新建客户
 	 * @method newCustomerCannel
 	 */
-	newCustomerCannel(e) {
+	newCustomerCannel(data) {
 		console.log('取消新建客户');
 		this.setState({
-			newCustomer: false
+			newCustomer: data
 		});
 	}
 
@@ -250,6 +317,116 @@ class Customer extends React.Component {
 		console.log('search:', val);
 	}
 
+	onCloseDrawer() {
+		this.setState({
+			drawerVisible: false
+		});
+	}
+
+	openDrawer() {
+		this.setState({
+			drawerVisible: true
+		});
+	}
+
+
+	DrawerHeader() {
+		return (<div className="clearfix">
+			<div className="pull-left">
+				北京市海淀汽修
+			</div>
+			<div className="pull-right">
+				<Button type="primary">
+					编辑
+				</Button>
+			</div>
+		</div>)
+	}
+
+
+	/**
+	 * 客户管理 --点击列表字段设置
+	 * @method setParamList
+	 * @param {Object} e 
+	 */
+	setParamList(e) {
+		this.setState({
+			paramsListVisible: true
+		});
+	}
+
+
+	/**
+	 * 客户管理 -- 列表字段设置 -- 确认
+	 * @method paramsListOk
+	 */
+	paramsListOk() {
+		this.setState({
+			paramsListVisible: false
+		});
+	}
+
+	/**
+	 * 客户管理 -- 列表字段设置 -- 取消
+	 * @method paramsListCancel
+	   */
+	paramsListCancel() {
+
+		console.log('这里显示了吗');
+		this.setState({
+			paramsListVisible: false
+		});
+	}
+
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 打开
+	 */
+	setSelectOpen() {
+
+		console.log('这里执行了吗');
+		this.setState({
+			setSelectVisible: true
+		});
+	}
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 提交
+	 */
+	setSelectOk() {
+		this.setState({
+			setSelectVisible: false
+		});
+	}
+
+
+	/**
+	 * 客户管理 -- 筛选条件设置 -- 取消
+	 */
+	setSelectCancel() {
+		this.setState({
+			setSelectVisible: false
+		});
+	}
+
+	/**
+	 * 客户管理 -- 批量点击确定
+	 */
+	moreEditOk() {
+		this.setState({
+			moreEditVisible: false
+		});
+	}
+
+
+	/**
+	 * 客户管理 -- 批量点击取消
+	 */
+	moreEditCancel() {
+		this.setState({
+			moreEditVisible: false
+		});
+	}
 
 	render() {
 
@@ -265,7 +442,7 @@ class Customer extends React.Component {
 				key: 'title',
 				render: (title) => {
 					return (
-						<a href="javascript:void();">{title}</a>
+						<a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
 					)
 				}
 			},
@@ -431,352 +608,94 @@ class Customer extends React.Component {
 		const { TextArea } = Input;
 
 
+		const { targetKeys, selectedKeys, disabled } = this.state;
+
 		return (
 			<Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
 
+
+				{/* 批量编辑开始 */}
+				<MoreEdit
+					moreEditVisible={this.state.moreEditVisible}
+					moreEditOk={this.moreEditOk.bind(this)}
+					moreEditCancel={this.moreEditCancel.bind(this)}
+				/>
+				{/* 批量编辑结束 */}
+
+				{/* 例表字段设置开始 */}
+
+
+				<SetParamList
+					paramsListVisible={this.state.paramsListVisible}
+					paramsListOk={this.paramsListOk.bind(this)}
+					paramsListCancel={this.paramsListCancel.bind(this)}
+				/>
+
+
+				{/* 列表字段设置结束 */}
+
+				{/* 筛选项设置开始 */}
+
+				<SetSelectParam
+					paramsListVisible={this.state.setSelectVisible}
+					paramsListOk={this.setSelectOk.bind(this)}
+					paramsListCancel={this.setSelectCancel.bind(this)}
+				/>
+
+				{/* 筛选项设置结束 */}
 				{/* 新建客户开始 */}
-				<Modal
-					title="新建客户"
-					visible={this.state.newCustomer}
-					onOk={this.newCustomerOk.bind(this)}
-					onCancel={this.newCustomerCannel.bind(this)}
-					footer={(<div><Button type="default" onClick={this.newCustomerCannel.bind(this)}>取消</Button><Button type="primary" onClick={this.newCustomerOk.bind(this)}>提交</Button></div>)}
-					cancelText={<Button>取消1</Button>}
-					width={628}
-				>
-					<Form {...formItemLayout} >
+				{/**
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+				<CreateCustomer
+					show={this.state.newCustomer}
+					newCustomerOk={this.newCustomerOk.bind(this)}
+					newCustomerCannel={this.newCustomerCannel.bind(this)}
+					refreshTable={this.refreshTable.bind(this)}
+				/>
 
 
-						{/*公司名称开始*/}
-						<FormItem label="公司名称">
-							{getFieldDecorator('reduce', {
-								rules: [
-									{
-										required: true,
-										message: '请输入公司名称',
-									}
-								]
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*公司名称结束*/}
-
-
-						{/*公司简称开始*/}
-						<FormItem label="公司简称">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*公司简称结束*/}
-
-						{/*客户状态开始*/}
-						<FormItem label="客户状态">
-							<Select
-								placeholder="客户状态选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">潜在客户</Option>
-								<Option value="2">初步接触</Option>
-								<Option value="3">持续跟进</Option>
-								<Option value="4">成交客户</Option>
-								<Option value="5">忠诚客户</Option>
-								<Option value="6">无效客户</Option>
-							</Select>
-						</FormItem>
-						{/*客户状态开始*/}
-
-
-
-						{/*客户分级开始*/}
-						<FormItem label="客户分级">
-							<Select
-								placeholder="客户分级选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">一类维修厂</Option>
-								<Option value="2">二类维修厂</Option>
-								<Option value="3">三类维修厂</Option>
-							</Select>
-						</FormItem>
-						{/*客户状态结束*/}
-
-
-						{/*客户来源开始*/}
-						<FormItem label="客户来源">
-							<Select
-								placeholder="客户来源选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">线下地推</Option>
-								<Option value="2">网略推广</Option>
-								<Option value="3">渠道代理</Option>
-							</Select>
-						</FormItem>
-						{/*客户来源结束*/}
-
-
-						{/*经营类型开始*/}
-						<FormItem label="经营类型">
-							<Select
-								placeholder="经营类型选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">快修</Option>
-								<Option value="2">综合</Option>
-								<Option value="3">轮胎</Option>
-								<Option value="2">专修</Option>
-								<Option value="3">4S店</Option>
-							</Select>
-						</FormItem>
-						{/*经营类型结束*/}
-
-
-
-						{/*联系电话开始*/}
-						<FormItem label="联系电话">
-							{getFieldDecorator('reduce', {
-								rules: [
-									{
-										required: true,
-										message: '请输入联系电话',
-									}
-								]
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*公司名称结束*/}
-
-						{/* 地址开始 */}
-						<FormItem label="地址">
-							{getFieldDecorator('reduce', {
-								rules: [
-									{
-										required: true,
-										message: '请输入地址',
-									}
-								]
-							})(
-								<Cascader options={options} onChange={this.onChangeCascader.bind(this)} placeholder="Please select" />
-							)}
-						</FormItem>
-						{/* 地址结束 */}
-
-						{/*详细地址开始*/}
-						<FormItem label="公司名称">
-							{getFieldDecorator('reduce', {
-								rules: [
-									{
-										required: true,
-										message: '请输入详细地址',
-									}
-								]
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*详细地址结束*/}
-
-
-						{/*客户性质开始*/}
-						<FormItem label="客户性质">
-							<Select
-								placeholder="客户性质选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">企业客户</Option>
-								<Option value="2">个人客户</Option>
-							</Select>
-						</FormItem>
-						{/*客户性质结束*/}
-
-
-						{/*经营主体开始*/}
-						<FormItem label="经营主体">
-							<Row gutter={24}>
-								<Col span={8}>
-									{getFieldDecorator('reduce', {
-										rules: [
-											{
-												required: true,
-												message: '请输入详细地址',
-											}
-										]
-									})(
-										<Select
-											placeholder="经营主体选择"
-											dropdownMatchSelectWidth={true}
-											value={"1"}
-											className="online"
-										>
-											<Option value="1">公司</Option>
-											<Option value="2">个人</Option>
-										</Select>
-									)}
-
-								</Col>
-								<Col span={8}>
-
-									{getFieldDecorator('reduce', {
-										rules: [
-											{
-												required: true,
-												message: '请输入详细地址',
-											}
-										]
-									})(
-										<Select
-											showSearch
-											placeholder="Select a person"
-											optionFilterProp="children"
-											onChange={this.onChange.bind(this)}
-											onFocus={this.onFocus.bind(this)}
-											onBlur={this.onBlur.bind(this)}
-											onSearch={this.onSearch.bind(this)}
-											filterOption={(input, option) =>
-												option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-											}
-										>
-											<Option value="jack">Jack</Option>
-											<Option value="lucy">Lucy</Option>
-											<Option value="tom">Tom</Option>
-										</Select>
-									)}
-
-
-								</Col>
-								<Col span={8}>
-									<Button type="primary">新建经营主体</Button>
-								</Col>
-							</Row>
-						</FormItem>
-						{/*经营主体结束*/}
-
-						{/*重要程度开始*/}
-						<FormItem label="重要程度">
-							<Select
-								placeholder="重要程度选择"
-								dropdownMatchSelectWidth={true}
-								value={"1"}
-								className="online"
-							>
-								<Option value="1">一星</Option>
-								<Option value="2">二星</Option>
-								<Option value="3">三星</Option>
-								<Option value="3">四星</Option>
-								<Option value="3">五星</Option>
-							</Select>
-						</FormItem>
-						{/*重要程度结束*/}
-
-
-						{/*微信群名开始*/}
-						<FormItem label="微信群名">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*微信群名结束*/}
-
-
-						{/*QQ开始*/}
-						<FormItem label="QQ">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*QQ结束*/}
-
-
-
-						{/*邮箱开始*/}
-						<FormItem label="邮箱">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*邮箱结束*/}
-
-						{/*公司官网开始*/}
-						<FormItem label="邮箱">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Input />
-							)}
-						</FormItem>
-						{/*公司官网结束*/}
-
-
-						{/*备注开始*/}
-						<FormItem label="备注">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<TextArea rows={4} />
-							)}
-						</FormItem>
-						{/*备注结束*/}
-
-						{/*图片开始*/}
-						<FormItem label="图片" extra="最多可上传9张图片">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Upload>
-									<Button type="default">
-										<Icon type="upload" /> Upload
-									</Button>
-								</Upload>
-							)}
-						</FormItem>
-						{/*图片结束*/}
-
-
-						{/*文件开始*/}
-						<FormItem label="文件" extra="最多可上传9张文件">
-							{getFieldDecorator('reduce', {
-
-							})(
-								<Upload>
-									<Button type="default">
-										<Icon type="upload" /> Upload
-									</Button>
-								</Upload>
-							)}
-						</FormItem>
-						{/*文件结束*/}
-
-
-
-					</Form>
-				</Modal>
 				{/* 新建客户结束 */}
+
+				{/**
+				  * 抽屉--详情
+				  */}
+
+				<CustomerDrawer
+					onCloseDrawer={this.onCloseDrawer.bind(this)}
+					drawerVisible={this.state.drawerVisible}
+				/>
+				{/* <Drawer
+					width={480}
+					title={this.DrawerHeader()}
+					placement="right"
+					closable={false}
+					onClose={this.onCloseDrawer.bind(this)}
+					visible={this.state.drawerVisible}
+				>
+					<p>公司名称：北京海淀汽修</p>
+					<p>公司简称：---</p>
+					<p>客户状态：潜在客户</p>
+					<p>客户分级：一类维修厂</p>
+					<p>客户来源：线下地推</p>
+					<p>经营类型：快修</p>
+					<p>联系电话：18600190151</p>
+					<p>地址：北京市海淀区xx街道xxx号</p>
+					<p>客户性质：---</p>
+					<p>经营主体：公司</p>
+					<p>--------(主体信息）</p>
+					<p>认证状态：未认证</p>
+					<p>重要程度：五星</p>
+					<p>微信群名：---</p>
+				</Drawer> */}
 
 				{ /*筛选区域开始*/}
 				<Content className="channel_filter">
 					<Form layout="inline" className="clearfix">
-						<FormItem label="" className="pull-right"  >
+						<FormItem label="" className="pull-right mrn"  >
 							{/*查询开始*/}
 							<Button type="primary" size={"default"} onClick={this.newCustomer.bind(this)}>新建客户</Button>
 							{/*查询结束*/}
@@ -1027,7 +946,7 @@ class Customer extends React.Component {
 						<Col span={2} >
 							<FormItem label="" className="pull-right">
 								{/* <Button type="dashed" >筛选设置</Button> */}
-								<Button type="dashed" >筛选设置</Button>
+								<Button type="dashed" onClick={this.setSelectOpen.bind(this)}>筛选设置</Button>
 							</FormItem>
 						</Col>
 					</Row>
@@ -1036,7 +955,7 @@ class Customer extends React.Component {
 
 				{ /*图表模块开始*/}
 				<Content className="channel_charts">
-					<Card extra={<Button type="dashed"> 列表字段设置</Button>}>
+					<Card extra={<Button type="dashed" onClick={this.setParamList.bind(this)}> 列表字段设置</Button>}>
 						<Spin spinning={false}>
 							{/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 2200, y: 300 }} /> */}
 							<Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 2200, y: 300 }} pagination={false} />
