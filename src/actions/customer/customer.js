@@ -74,6 +74,33 @@ const getSelectParam = (data) => {
             });
 
             console.log(msg, 'msgmsgmsgmsg');
+
+            var arr = [];
+
+
+            // _.includes(v, configRender)
+
+            msg.map((v, k) => {
+                if (v.is_table_show) {
+
+                    arr.push({
+                        title: v.display,
+                        width: 150,
+                        dataIndex: v.name,
+                        key: v.name
+                    });
+
+                }
+            })
+
+            await dispatch({
+                type: "CUSTOMER_COLUMNS",
+                payload: arr
+            });
+
+
+
+
         });
     }
 }
@@ -146,143 +173,7 @@ const getTableData = (data, meta) => {
 }
 
 
-const getColumns = (data) => {
-
-    return async function (dispatch) {
-        console.log(data, '**********data************************');
-
-
-
-
-        var configRender = "name";
-        var configRightFixed = "county";
-
-        var arr = [];
-
-
-        // _.includes(v, configRender)
-
-        data.map((v, k) => {
-            if (v.is_table_show) {
-
-                arr.push({
-                    title: v.display,
-                    width: 150,
-                    dataIndex: v.name,
-                    key: v.name
-                });
-
-
-            }
-        })
-
-
-        await dispatch({
-            type: "CUSTOMER_COLUMNS",
-            payload: arr
-        });
-
-        console.log(arr, 'arrarrarrarrarrarrarr');
-
-        // [
-        //     {
-        //         title: '客户名称',
-        //         dataIndex: 'name',
-        //         key: 'name',
-        //         render: (title) => {
-        //             return (
-        //                 <a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
-        //             )
-        //         }
-        //     },
-        //     {
-        //         title: '客户电话',
-        //         width: 150,
-        //         dataIndex: 'phone',
-        //         key: 'phone'
-        //     },
-        //     {
-        //         title: '客户状态',
-        //         width: 150,
-        //         dataIndex: 'state',
-        //         key: 'state'
-        //     },
-        //     {
-        //         title: '客户分级',
-        //         dataIndex: 'level',
-        //         key: 'level',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '客户来源',
-        //         dataIndex: 'origin',
-        //         key: 'origin',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '经营类型',
-        //         dataIndex: 'major_type',
-        //         key: 'major_type',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '经营主体',
-        //         dataIndex: 'subject',
-        //         key: 'subject',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '认证状态',
-        //         dataIndex: 'auth_status',
-        //         key: 'auth_status',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '客户性质',
-        //         dataIndex: 'subject_type',
-        //         key: 'subject_type',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '重要程度',
-        //         dataIndex: 'importance',
-        //         key: 'importance',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '微信群名',
-        //         dataIndex: 'wx_room_name',
-        //         key: 'wx_room_name',
-        //         width: 150
-        //     },
-        //     {
-        //         title: '省',
-        //         dataIndex: 'province',
-        //         key: 'province',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '市',
-        //         dataIndex: 'city',
-        //         key: 'city',
-        //         width: 150,
-        //     },
-        //     {
-        //         title: '区',
-        //         dataIndex: 'county',
-        //         key: 'county',
-        //         width: 150,
-        //         fixed: 'right'
-        //     }
-        // ]
-    }
-
-
-}
-
-
 export {
     getSelectParam,
-    getTableData,
-    getColumns
+    getTableData
 }

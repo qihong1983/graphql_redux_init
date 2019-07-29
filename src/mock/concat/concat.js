@@ -9,36 +9,42 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
         "display": "姓名",
         "is_default": true,
         "is_show": true,
+        "is_table_show": true,
         "type": "string"
     }, {
         "name": "phone",
         "display": "电话",
         "is_default": true,
         "is_show": true,
+        "is_table_show": true,
         "type": "string"
     }, {
         "name": "partner",
         "display": "关联客户",
         "is_default": true,
         "is_show": true,
+        "is_table_show": true,
         "type": "string"
     }, {
         "name": "wx_name",
         "display": "微信昵称",
         "is_default": false,
         "is_show": true,
+        "is_table_show": true,
         "type": "string"
     }, {
         "name": "title",
         "display": "职务",
         "is_default": false,
         "is_show": true,
+        "is_table_show": true,
         "type": "string"
     }, {
         "name": "rank",
         "display": "级别",
         "is_default": false,
         "is_show": true,
+        "is_table_show": true,
         "type": "enum",
         "enums": [{ "key": 1, "value": "高层" }, { "key": 2, "value": "中层" }, { "key": 3, "value": "基层" }]
     }, {
@@ -46,6 +52,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
         "display": "重要程度",
         "is_default": false,
         "is_show": true,
+        "is_table_show": true,
         "type": "enum",
         "enums": [{ "key": 1, "value": "一星" }, { "key": 2, "value": "二星" }, { "key": 3, "value": "三星" }, { "key": 4, "value": "四星" }, { "key": 5, "value": "五星" }]
     }, {
@@ -53,6 +60,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
         "display": "决策关系",
         "is_default": false,
         "is_show": true,
+        "is_table_show":true,
         "type": "enum",
         "enums": [{ "key": 1, "value": "关键决策人" }, { "key": 2, "value": "分项决策人" }, { "key": 3, "value": "商务决策人" }, { "key": 4, "value": "技术决策人" }, { "key": 5, "value": "财务决策人" }, { "key": 6, "value": "使用人" }, { "key": 7, "value": "意见影响人" }, { "key": 8, "value": "普通人" }]
     }]

@@ -11,7 +11,8 @@ const Concat = (state, action) => {
         //初始化
         return {
             selectParam: [],
-            table: []
+            table: [],
+            columns: []
         };
     }
 
@@ -29,6 +30,11 @@ const Concat = (state, action) => {
             return Object.assign({}, state, {
                 table: action.payload
             });
+
+        case "CONCAT_COLUMNS":
+            return Object.assign({}, state, {
+                columns: action.payload
+            })
 
         // columns1
 

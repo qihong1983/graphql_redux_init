@@ -4,6 +4,8 @@ import { graphql, compose } from 'react-apollo';
 
 import { getAuthorsQuery, addBookMutation, getBooksQuery } from '../../queries/queries';
 
+import _ from 'lodash';
+
 import {
     Router,
     Route,
@@ -172,11 +174,11 @@ class Contact extends React.Component {
 
 
 
-        this.getParam();
+        await this.getParam();
 
 
 
-        this.getTable();
+        await this.getTable();
 
     }
 
@@ -677,119 +679,41 @@ class Contact extends React.Component {
 
 
 
-        const columns = [
-            {
-                title: '姓名',
-                dataIndex: 'name',
-                key: 'name',
-                width: 150,
-                render: (title) => {
+        var configRender = "name";
+        var configPartnerRender = "partner";
+        var configRightFixed = "county";
+
+
+
+        this.props.Concat.columns.map((v, k) => {
+
+
+            if (_.includes(v, configRender)) {
+                v.render = (title) => {
                     return (
-                        <a href="#" onClick={this.openDrawerContact.bind(this)}>{title}</a>
+                        <a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
                     )
                 }
-            },
-            {
-                title: '关联客户',
-                width: 150,
-                dataIndex: 'partner',
-                key: 'partner',
-                render: (title) => {
+            } else if (_.includes(v, configPartnerRender)) {
+                v.render = (title) => {
                     return (
-                        <a href="#" onClick={this.openDrawer.bind(this)}>{title}</a>
+                        <a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
                     )
                 }
-            },
-            {
-                title: '电话',
-                width: 150,
-                dataIndex: 'phone',
-                key: 'phone'
-            },
-            {
-                title: '微信昵称',
-                dataIndex: 'wx_name',
-                key: 'wx_name',
-                width: 150,
-            },
-            {
-                title: '职务',
-                dataIndex: 'title',
-                key: 'title',
-                width: 150,
-            },
-            {
-                title: '级别',
-                dataIndex: 'rank',
-                key: 'rank',
-                width: 150,
-            },
-            {
-                title: '决策关系',
-                dataIndex: 'decision',
-                key: 'decision',
-                width: 150,
-            },
-            {
-                title: '状态',
-                dataIndex: 'status',
-                key: 'status',
-                width: 150,
-            },
-            {
-                title: '创建时间',
-                dataIndex: 'created_at',
-                key: 'created_at',
-                width: 150,
-            },
-            {
-                title: '更新时间',
-                dataIndex: 'updated_at',
-                key: 'updated_at',
-                width: 150,
-            },
-            {
-                title: '级重要程度别',
-                dataIndex: 'importance',
-                key: 'importance',
-                width: 150,
-                fixed: 'right'
+            } else if (this.props.Concat.columns.length - 1 == k) {
+                v.fixed = "right";
             }
-        ];
 
 
-        if (this.props.Concat.table) {
-            data = this.props.Concat.table.contacts;
-        }
+        });
 
-        // console.log(this.props.Concat.table., 'this.props.Concat');
+
 
         var data = [];
 
         if (this.props.Concat.table) {
             data = this.props.Concat.table.contacts;
         }
-
-
-        // for (let i = 0; i < 100; i++) {
-        //     data.push({
-        //         "id": i,
-        //         "name": "客户名称",
-        //         "phone": "联系电话",
-        //         "partner": "关联客户",
-        //         "wx_name": "微信昵称",
-        //         "title": "职务",
-        //         "rank": "级别",
-        //         "importance": "重要程度",
-        //         "decision": "决策关系",
-        //         "status": "状态",
-        //         "created_at": "创建时间",
-        //         "updated_at": "更新时间"
-        //     });
-        // }
-
-
-
 
 
         const rowSelection = {
@@ -888,134 +812,9 @@ class Contact extends React.Component {
                         <Col span={22} >
                             <Form layout="inline">
 
-
+                                {/* 渲染筛选项开始 */}
                                 {this.renderSelectParams()}
-
-
-                                {/*客户名称开始*/}
-                                {/* <FormItem label="姓名">
-                                    {getFieldDecorator('reduce', {
-
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem> */}
-                                {/*客户名称结束*/}
-
-
-                                {/*联系电话开始*/}
-                                {/* <FormItem label="电话">
-                                    {getFieldDecorator('reduce', {
-
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem> */}
-                                {/*联系电话结束*/}
-
-
-                                {/*关联客户开始*/}
-                                {/* <FormItem label="关联客户">
-                                    <Select
-                                        placeholder="关联客户选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">潜在客户</Option>
-                                        <Option value="2">初步接触</Option>
-                                        <Option value="3">持续跟进</Option>
-                                        <Option value="4">成交客户</Option>
-                                        <Option value="5">忠诚客户</Option>
-                                        <Option value="6">无效客户</Option>
-                                    </Select>
-                                </FormItem> */}
-                                {/*关联客户开始*/}
-
-                                {/*微信昵称开始*/}
-                                {/* <FormItem label="微信昵称">
-                                    {getFieldDecorator('reduce', {
-
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem> */}
-                                {/*微信昵称结束*/}
-
-                                {/*职务开始*/}
-                                {/* <FormItem label="职务">
-                                    {getFieldDecorator('reduce', {
-
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem> */}
-                                {/*职务结束*/}
-
-
-                                {/*级别开始*/}
-                                {/* <FormItem label="级别">
-                                    <Select
-                                        placeholder="级别选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">高层</Option>
-                                        <Option value="2">中层</Option>
-                                        <Option value="3">基层</Option>
-                                    </Select>
-                                </FormItem> */}
-                                {/*级别结束*/}
-
-                                {/*重要程序开始*/}
-                                {/* <FormItem label="重要程序">
-                                    <Select
-                                        placeholder="重要程序选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">一星</Option>
-                                        <Option value="2">二星</Option>
-                                        <Option value="3">三星</Option>
-                                        <Option value="3">四星</Option>
-                                        <Option value="3">五星</Option>
-                                    </Select>
-                                </FormItem> */}
-                                {/*重要程序结束*/}
-
-                                {/*微信群名开始*/}
-                                {/* <FormItem label="微信群名">
-                                    {getFieldDecorator('reduce', {
-
-                                    })(
-                                        <Input />
-                                    )}
-                                </FormItem> */}
-                                {/*微信群名结束*/}
-
-
-                                {/*决策关系开始*/}
-                                {/* <FormItem label="决策关系">
-                                    <Select
-                                        placeholder="决策关系选择"
-                                        dropdownMatchSelectWidth={true}
-                                        value={"1"}
-                                        className="online"
-                                    >
-                                        <Option value="1">关键决策人</Option>
-                                        <Option value="2">分项决策人</Option>
-                                        <Option value="3">商务决策人</Option>
-                                        <Option value="3">技术决策人</Option>
-                                        <Option value="3">财务决策人</Option>
-                                        <Option value="3">使用人</Option>
-                                        <Option value="3">意见影响人</Option>
-                                        <Option value="3">普通人</Option>
-                                    </Select>
-                                </FormItem> */}
-                                {/*决策关系结束*/}
-
+                                {/* 渲染筛选项结束 */}
 
                             </Form>
 
@@ -1036,7 +835,8 @@ class Contact extends React.Component {
                     <Card extra={<Button type="dashed" onClick={this.setParamList.bind(this)}> 列表字段设置</Button>}>
                         <Spin spinning={false}>
                             {/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 2200, y: 300 }} /> */}
-                            <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} pagination={false} />
+                            {/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 1500, y: 300 }} pagination={false} /> */}
+                            <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={this.props.Concat.columns} dataSource={data} scroll={{ x: 1500, y: 300 }} pagination={false} />
                         </Spin>
                     </Card>
                 </Content>

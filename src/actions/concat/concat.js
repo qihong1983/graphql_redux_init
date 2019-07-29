@@ -47,7 +47,34 @@ const getSelectParam = (data) => {
                 payload: msg
             });
 
-            console.log(msg, 'msgmsgmsgmsg');
+
+            var arr = [];
+
+
+            // _.includes(v, configRender)
+
+            msg.map((v, k) => {
+                if (v.is_table_show) {
+
+                    arr.push({
+                        title: v.display,
+                        width: 150,
+                        dataIndex: v.name,
+                        key: v.name
+                    });
+
+                }
+            })
+
+            console.log(arr, 'arrarrarrarr');
+
+            await dispatch({
+                type: "CONCAT_COLUMNS",
+                payload: arr
+            });
+
+
+
         });
     }
 }
@@ -74,7 +101,6 @@ const getTableData = (data) => {
             cache: true
         }).then(async (msg) => {
 
-
             console.log(msg, 'table');
 
             await dispatch({
@@ -86,7 +112,17 @@ const getTableData = (data) => {
 }
 
 
+const getColumns = (data) => {
+
+    return async function (dispatch) {
+        console.log(data, '------------data----------');
+    }
+
+}
+
+
 export {
     getSelectParam,
-    getTableData
+    getTableData,
+    getColumns
 }
