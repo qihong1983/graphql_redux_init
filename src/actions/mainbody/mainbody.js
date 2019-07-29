@@ -15,23 +15,104 @@ import {
 
 
 
+
+function toQueryString(obj) {
+	return obj ? Object.keys(obj).sort().map(function (key) {
+		var val = obj[key];
+		if (Array.isArray(val)) {
+			return val.sort().map(function (val2) {
+				return encodeURIComponent(key) + '=' + encodeURIComponent(val2);
+			}).join('&');
+		}
+		return encodeURIComponent(key) + '=' + encodeURIComponent(val);
+	}).join('&') : '';
+}
+
+
+
 const getSelectParam = (data) => {
 	return async function (dispatch) {
 
 
-		// http://rap2api.taobao.org/app/mock/225693/crm/subject/metadata
+		var options = {};
+
+		var url = 'http://xxx.mock.com/crm/subject/metadata';
+
+		if (window.location.search.indexOf("debug") > 0 || window.location.search.indexOf("web_ci") > 0) {
+
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true
+			}
+
+		} else {
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true,
+				data: data
+			}
+		}
+
 
 		//发送请求
-		await reqwest({
-			url: 'http://xxx.mock.com/crm/subject/metadata',
-			method: 'get',
-			type: 'json',
-			cache: true
-		}).then(async (msg) => {
-
+		await reqwest(options).then(async (msg) => {
 
 			await dispatch({
 				type: "MAINBODY_SELECTPARAM",
+				payload: msg
+			});
+
+			console.log(msg, 'msgmsgmsgmsg');
+		});
+	}
+}
+
+
+const getTableData = (data) => {
+
+
+	return async function (dispatch) {
+
+
+		var params = toQueryString(data);
+
+
+		var options = {};
+
+		var url = 'http://xxx.mock.com/crm/subject/list';
+
+		if (window.location.search.indexOf("debug") > 0 || window.location.search.indexOf("web_ci") > 0) {
+
+
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true
+			}
+
+		} else {
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true,
+				data: data
+			}
+		}
+
+
+		await reqwest(options).then(async (msg) => {
+
+
+			console.log(msg, 'table');
+
+			await dispatch({
+				type: "MAINBODY_TABLE",
 				payload: msg
 			});
 		});
@@ -39,8 +120,7 @@ const getSelectParam = (data) => {
 }
 
 
-
-
 export {
-	getSelectParam
+	getSelectParam,
+	getTableData
 }

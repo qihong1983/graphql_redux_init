@@ -29,6 +29,7 @@ import {
     Button,
     Select,
     Table,
+    Tooltip,
     DatePicker,
     Tabs,
     Spin,
@@ -42,6 +43,8 @@ import {
     Input,
     LocaleProvider
 } from 'antd';
+
+const { confirm } = Modal;
 
 const ButtonGroup = Button.Group;
 const TabPane = Tabs.TabPane;
@@ -103,6 +106,7 @@ import {
 
 // import * as actionCreators from '../../actions/allTrend/allTrend';
 
+import Area from '../../common/area';
 
 import * as actionCreators from '../../actions/mainbody/mainbody';
 
@@ -115,13 +119,37 @@ import MainBodyDrawer from './mainBodyDrawer';
 import MoreEdit from './moreEdit';
 
 
-function onShowSizeChange(current, pageSize) {
-    console.log(current, pageSize);
-}
 class MainBody extends React.Component {
 
     constructor(props) {
         super(props);
+
+        // this.state = {
+        //     isQuery: true,
+        //     //公司
+        //     newCustomer: false,
+        //     //个人
+        //     newCustomerPerson: false,
+        //     mainBodyType: 1,
+        //     drawerVisible: false,
+        //     moreEditVisible: false,
+        //     type: "",
+        //     name: "",
+        //     id_code: "",
+        //     phone: "",
+        //     is_main: 1,
+        //     province: "110000",
+        //     city: "110100",
+        //     county: "110101",
+        //     page: 1,
+        //     limit: 10,
+        //     provinceArr: [],
+        //     cityArr: [],
+        //     countyArr: []
+        // }
+
+
+
 
         this.state = {
             isQuery: true,
@@ -131,7 +159,20 @@ class MainBody extends React.Component {
             newCustomerPerson: false,
             mainBodyType: 1,
             drawerVisible: false,
-            moreEditVisible: false
+            moreEditVisible: false,
+            type: "",
+            name: "",
+            id_code: "",
+            phone: "",
+            is_main: 1,
+            province: "",
+            city: "",
+            county: "",
+            page: 1,
+            limit: 10,
+            provinceArr: [],
+            cityArr: [],
+            countyArr: []
         }
 
     }
@@ -143,10 +184,72 @@ class MainBody extends React.Component {
     componentDidMount() {
         NProgress.done();
 
-        // 假如
-        this.props.getSelectParam();
 
-        console.log(this.props, 'this.props');
+
+        this.init();
+
+        // console.log(this.props, 'this.props');
+    }
+
+    async init() {
+
+        //省数据
+
+        this.getProvince();
+
+        //市数据
+
+        this.getCity();
+
+        //区数据
+
+        this.getCounty();
+
+        //获取筛选
+        await this.getParams();
+
+
+        //获取表格
+        await this.getTable();
+    }
+
+    async getParams() {
+        // 获取筛选项
+        await this.props.getSelectParam();
+
+    }
+
+    async getTable() {
+        var params = {
+            "type": this.state.type,
+            "name": this.state.name,
+            "id_code": this.state.id_code,
+            "phone": this.state.phone,
+            "is_main": this.state.is_main,
+            "province": this.state.province,
+            "city": this.state.city,
+            "county": this.state.county,
+            "page": this.state.page,
+            "limit": this.state.limit
+        }
+
+
+        await this.props.getTableData(params);
+
+    }
+
+
+    onShowSizeChange(current, pageSize) {
+
+        this.setState({
+            test: 1,
+            page: 1,
+            limit: pageSize
+        }, () => {
+            this.getTable();
+        });
+
+        console.log(current, pageSize, '*****************');
     }
 
     displayAuthhors() {
@@ -175,10 +278,20 @@ class MainBody extends React.Component {
         }
     }
 
+    changePagination(current, size) {
+
+        this.setState({
+            page: current,
+            limit: size
+        }, () => {
+            this.getTable();
+        });
+
+        console.log(current, size, '***@@@');
+    }
+
     tableFooter() {
         return (
-
-
 
             <Row gutter={24}>
                 <Col span={10} >
@@ -197,9 +310,11 @@ class MainBody extends React.Component {
                     <Pagination
                         className="pull-right"
                         showSizeChanger
-                        onShowSizeChange={onShowSizeChange}
-                        defaultCurrent={3}
-                        total={500}
+                        onShowSizeChange={this.onShowSizeChange.bind(this)}
+                        onChange={this.changePagination.bind(this)}
+                        defaultCurrent={this.state.page}
+                        current={this.state.page}
+                        total={this.props.mainBody.table.length != 0 ? this.props.mainBody.table.pagination.total_count : 0}
                     />
                 </Col>
             </Row>
@@ -211,13 +326,30 @@ class MainBody extends React.Component {
      * @method onClickMoreDelete
      */
     onClickMoreDelete(e) {
-        Modal.warning({
-            title: '确定要删除吗',
+        // Modal.warning({
+        //     title: '确定要删除吗',
+        //     content: '确定要删除吗',
+        //     okText: '删除',
+        //     cancelText: '取消',
+        //     onOk: () => {
+        //         console.log('111');
+        //     },
+        //     onCancel: () => {
+        //         console.log('222');
+        //     }
+        // });
+
+
+
+        confirm({
+            title: '确定要删除吗?',
             content: '确定要删除吗',
-            okText: '删除',
-            onOk: () => {
-                console.log('111');
-            }
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
         });
     }
 
@@ -241,9 +373,9 @@ class MainBody extends React.Component {
     }
 
     /**
- * 点击批量编辑
- * @method onClickMoreEdit
- */
+     * 点击批量编辑
+     * @method onClickMoreEdit
+     */
     onClickMoreEdit(e) {
         this.setState({
             moreEditVisible: true
@@ -302,6 +434,304 @@ class MainBody extends React.Component {
         });
     }
 
+    renderOptions(data, type) {
+        var arr = [];
+
+
+        data.map((v, k) => {
+
+            arr.push(<Option type={type} value={v.key}>{v.value}</Option>);
+        })
+
+        return arr;
+    }
+
+    getProvince() {
+
+        var arr = [];
+
+
+
+        arr.push({
+            key: "",
+            name: "全部"
+        })
+        Area.map((v, k) => {
+            arr.push({
+                key: v.code,
+                name: v.name
+            });
+        });
+
+
+
+        this.setState({
+            provinceArr: arr
+        });
+
+
+        return arr;
+    }
+
+    getCity() {
+        var arr = [];
+
+
+        arr.push({
+            key: "",
+            name: "全部"
+        })
+        Area.map((v, k) => {
+
+            if (v.code == this.state.province) {
+
+
+                v.children.map((cityV, cityK) => {
+
+                    console.log(cityV, 'cityV');
+
+                    arr.push({
+                        key: cityV.code,
+                        name: cityV.name
+                    })
+                });
+            }
+
+
+        })
+
+
+        this.setState({
+            city: "",
+            cityArr: arr
+        });
+
+
+
+        return arr;
+    }
+
+    getCounty() {
+        var arr = [];
+
+
+        arr.push({
+            key: "",
+            name: "全部"
+        })
+
+        Area.map((v, k) => {
+
+            if (v.code == this.state.province) {
+                v.children.map((cityV, cityK) => {
+
+                    if (cityV.code == this.state.city) {
+                        cityV.children.map((countyV, countyK) => {
+                            arr.push({
+                                key: countyV.code,
+                                name: countyV.name
+                            })
+                        })
+                    }
+
+                });
+            }
+
+        });
+
+        this.setState({
+            county: "",
+            countyArr: arr
+        });
+
+        return arr;
+    }
+
+    renderAreaOption(data) {
+
+        if (data == "province") {
+
+            // var provinceData = this.getProvince();
+
+            var arr = [];
+
+            this.state.provinceArr.length != 0 && this.state.provinceArr.map((v, k) => {
+                arr.push(<Option type={data} value={v.key}>{v.name}</Option>)
+            })
+
+            // provinceData.map((v, k) => {
+            //     arr.push(<Option value={v.key}>{v.name}</Option>)
+            // })
+
+            // this.state.provinceArr.map((v, k) => {
+            //     arr.push(<Option value={v.key}>{v.name}</Option>)
+            // })
+
+            return arr;
+
+        } else if (data == "city") {
+
+            var arr = [];
+
+            // var cityData = this.getCity();
+
+            // console.log(cityData, 'cityData');
+
+            // cityData.map((v, k) => {
+            //     arr.push(<Option value={v.key}>{v.name}</Option>)
+            // })
+
+            this.state.cityArr.length != 0 && this.state.cityArr.map((v, k) => {
+                arr.push(<Option type={data} value={v.key}>{v.name}</Option>)
+            })
+
+            return arr;
+        } else {
+
+            var arr = [];
+
+            // var countyData = this.getCounty();
+            // console.log(countyData, 'countyDatacountyDatacountyData');
+
+            // countyData.map((v, k) => {
+            //     arr.push(<Option value={v.key}>{v.name}</Option>);
+            // })
+
+
+            this.state.countyArr.length != 0 && this.state.countyArr.map((v, k) => {
+                arr.push(<Option type={data} value={v.key}>{v.name}</Option>);
+            })
+            return arr;
+        }
+
+    }
+
+
+    initArea(data) {
+        if (data == "province") {
+            return this.state.province;
+        } else if (data == "city") {
+            return this.state.city;
+        } else if (data == "county") {
+            return this.state.county;
+        }
+    }
+
+    setSelect(e, option) {
+        console.log(e, option, '###');
+        console.log(option.props.type, 'option.props.type');
+
+
+        switch (option.props.type) {
+            case "type":
+                this.setState({
+                    type: e
+                }, () => {
+                    this.getTable();
+                });
+                break;
+            case "is_main":
+                this.setState({
+                    is_main: e
+                }, () => {
+                    this.getTable();
+                });
+                break;
+
+            case "province":
+
+                console.log('111222333');
+
+                this.setState({
+                    province: e,
+                    city: "",
+                    county: ""
+                }, async () => {
+
+
+                    this.props.form.setFieldsValue({
+                        city: "",
+                        county: ""
+                    })
+                    await this.getCity();
+
+                    await this.getCounty();
+
+
+                    await this.initArea();
+                    await this.getTable();
+                });
+                break;
+
+            case "city":
+                this.setState({
+                    city: e,
+                    county: ""
+                }, async () => {
+
+                    this.props.form.setFieldsValue({
+                        county: ""
+                    })
+
+                    await this.getCounty();
+
+                    await this.getTable();
+                });
+                break;
+
+            case "county":
+                this.setState({
+                    county: e
+                }, () => {
+                    this.getTable();
+                });
+                break;
+            default:
+                this.setState({
+                    type: e
+                }, () => {
+                    this.getTable();
+                });
+        }
+    }
+
+
+
+    changeInput(e) {
+
+        switch (e.target.dataset.type) {
+            case "name":
+                this.setState({
+                    name: e.target.value
+                }, () => {
+                    this.getTable();
+                });
+                break;
+            case "id_code":
+                this.setState({
+                    is_code: e.target.value
+                }, () => {
+                    this.getTable();
+                });
+                break;
+
+            case "phone":
+                this.setState({
+                    phone: e.target.value
+                }, () => {
+                    this.getTable();
+                });
+                break;
+            default:
+                this.setState({
+                    name: e.target.value
+                }, () => {
+                    this.getTable();
+                });
+        }
+
+    }
+
     renderSelectParams() {
 
 
@@ -309,128 +739,75 @@ class MainBody extends React.Component {
             getFieldDecorator
         } = this.props.form;
 
-        console.log(this.props.mainBody.selectParam, 'selectParam');
+        var arr = [];
+
+
+
         if (this.props.mainBody.selectParam.length != 0) {
+            this.props.mainBody.selectParam.map((v, k) => {
 
+                if (v.type == "enum") {
+
+                    // initialValue: v.enums[0].key,
+
+                    if (v.is_show) {
+                        arr.push(<FormItem label={v.display} key={v.name}>
+
+                            {getFieldDecorator(v.name, {
+                                initialValue: v.enums[0].key
+                            })(
+                                <Select
+                                    data-name={v.name}
+                                    onChange={this.setSelect.bind(this)}
+                                    placeholder={`${v.display}选择`}
+                                    dropdownMatchSelectWidth={true}
+                                    className="online"
+                                    style={{ minWidth: "171px" }}
+                                >
+                                    {this.renderOptions(v.enums, v.name)}
+                                </Select>
+                            )}
+                        </FormItem>)
+                    }
+
+                } else if (v.type == "string") {
+
+                    if (v.is_show) {
+                        arr.push(<FormItem label={v.display} key={v.name}>
+                            {getFieldDecorator(v.name, {
+
+                            })(
+                                <Input onChange={this.changeInput.bind(this)} data-type={v.name} />
+                            )}
+                        </FormItem>)
+
+                    }
+                } else if (v.type == "location") {
+                    arr.push(<FormItem label={v.display} key={v.name}>
+
+                        {getFieldDecorator(v.name, {
+                            initialValue: this.initArea(v.name)
+                        })(
+                            <Select
+                                data-name={v.name}
+                                onChange={this.setSelect.bind(this)}
+                                placeholder={`${v.display}选择`}
+                                dropdownMatchSelectWidth={true}
+                                className="online"
+                                style={{ minWidth: "171px" }}
+                                value={this.initArea(v.name)}
+                            >
+                                {this.renderAreaOption(v.name)}
+                            </Select>
+                        )}
+                    </FormItem>)
+                }
+
+            });
         }
-        return (<Form layout="inline">
 
+        return arr;
 
-            {/*经营主体开始*/}
-            <FormItem label="经营主体">
-                <Select
-                    placeholder="经营主体选择"
-                    dropdownMatchSelectWidth={true}
-                    value={"1"}
-                    className="online"
-                >
-                    <Option value="1">公司</Option>
-                    <Option value="2">个人</Option>
-                </Select>
-            </FormItem>
-            {/*经营主体结束*/}
-
-            {/*公司名称/个人开始*/}
-            <FormItem label="公司名称/个人开始">
-                {getFieldDecorator('reduce', {
-
-                })(
-                    <Input />
-                )}
-            </FormItem>
-            {/*公司名称/个人开始*/}
-
-
-            {/*税号/身份证号开始*/}
-            <FormItem label="税号/身份证号">
-                {getFieldDecorator('reduce', {
-
-                })(
-                    <Input />
-                )}
-            </FormItem>
-            {/*税号/身份证号结束*/}
-            {/*联系电话开始*/}
-            <FormItem label="联系电话">
-                {getFieldDecorator('reduce', {
-
-                })(
-                    <Input />
-                )}
-            </FormItem>
-            {/*联系电话结束*/}
-
-
-            {/*是否为集团总公司开始*/}
-            <FormItem label="客户状态">
-                <Select
-                    placeholder="客户状态选择"
-                    dropdownMatchSelectWidth={true}
-                    value={"1"}
-                    className="online"
-                >
-                    <Option value="1">是</Option>
-                    <Option value="2">否</Option>
-                </Select>
-            </FormItem>
-            {/*是否为集团总公司结束*/}
-
-
-
-            {/*省开始*/}
-            <FormItem label="省">
-                <Select
-                    placeholder="省选择"
-                    dropdownMatchSelectWidth={true}
-                    value={"1"}
-                    className="online"
-                >
-                    <Option value="1">北京</Option>
-                    <Option value="2">吉林</Option>
-                    <Option value="3">辽宁</Option>
-                    <Option value="3">上海</Option>
-                    <Option value="3">深圳</Option>
-                </Select>
-            </FormItem>
-            {/*省结束*/}
-
-
-            {/*省开始*/}
-            <FormItem label="市">
-                <Select
-                    placeholder="市选择"
-                    dropdownMatchSelectWidth={true}
-                    value={"1"}
-                    className="online"
-                >
-                    <Option value="1">北京</Option>
-                    <Option value="2">吉林</Option>
-                    <Option value="3">辽宁</Option>
-                    <Option value="3">上海</Option>
-                    <Option value="3">深圳</Option>
-                </Select>
-            </FormItem>
-            {/*市结束*/}
-
-
-            {/*区开始*/}
-            <FormItem label="区">
-                <Select
-                    placeholder="区选择"
-                    dropdownMatchSelectWidth={true}
-                    value={"1"}
-                    className="online"
-                >
-                    <Option value="1">北京</Option>
-                    <Option value="2">吉林</Option>
-                    <Option value="3">辽宁</Option>
-                    <Option value="3">上海</Option>
-                    <Option value="3">深圳</Option>
-                </Select>
-            </FormItem>
-            {/*区结束*/}
-
-        </Form>)
     }
 
     render() {
@@ -439,79 +816,112 @@ class MainBody extends React.Component {
             getFieldDecorator
         } = this.props.form;
 
+        console.log(this.props, '***this.props***');
 
+        console.log(this.state, '### this.state ###');
 
         const columns = [
             {
                 title: '公司名称/姓名',
-                dataIndex: 'c1',
-                key: 'c1',
-                render: (title) => {
+                dataIndex: 'name',
+                key: 'name',
+                render: (title, record) => {
                     return (
-                        <a href="#" onClick={this.openDrawer.bind(this)}>{title}</a>
+                        <a href="#" data-id={record.id} onClick={this.openDrawer.bind(this)}>{title}</a>
                     )
                 }
             },
             {
                 title: '税号/身份证号',
                 width: 150,
-                dataIndex: 'c2',
-                key: 'c2'
+                dataIndex: 'id_code',
+                key: 'id_code'
             },
             {
                 title: '联系电话',
                 width: 150,
-                dataIndex: 'c3',
-                key: 'c3'
+                dataIndex: 'phone',
+                key: 'phone'
             },
             {
                 title: '是否为集团总公司',
-                dataIndex: 'c4',
-                key: 'c4',
+                dataIndex: 'is_group',
+                key: 'is_group',
                 width: 150,
+                render: (text, record) => {
+                    var word = "是";
+                    if (text) {
+                        word = "是";
+                    } else {
+                        word = "否";
+                    }
+                    return (<span>{word}</span>)
+                }
             },
             {
                 title: '省',
-                dataIndex: 'c5',
-                key: 'c5',
+                dataIndex: 'province',
+                key: 'province',
                 width: 150,
             },
             {
                 title: '市',
-                dataIndex: 'c6',
-                key: 'c6',
+                dataIndex: 'city',
+                key: 'city',
                 width: 150,
             },
             {
                 title: '区',
-                dataIndex: 'c7',
-                key: 'c7',
+                dataIndex: 'county',
+                key: 'county',
                 width: 150,
             },
             {
                 title: '备注',
-                dataIndex: 'c8',
-                key: 'c8',
+                dataIndex: 'note',
+                key: 'note',
                 width: 150,
-                fixed: 'right'
+                fixed: 'right',
+                render: (text, record) => {
+
+                    return (
+                        <Tooltip placement="topLeft" title={text}>
+                            {text.slice(0, 5)}
+                        </Tooltip>)
+                }
             }
         ];
 
 
-        const data = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                id: i,
-                c1: `北京 ${i} xxx 有限公司`,
-                c2: 18600190151,
-                c3: `状态 ${i}`,
-                c4: `asdf1`,
-                c5: `asdf2`,
-                c6: `asdf3`,
-                c7: `asdf4`,
-                c8: `asdf5`
-            });
+
+        // render: (text, record) => {
+        //     return (<Tooltip placement="topLeft" title={text}>
+        //         <span>{text.alice(0, 5)}</span>
+        //     </Tooltip>
+        //     )
+        // }
+        var data = [];
+
+
+        if (this.props.mainBody.table) {
+            data = this.props.mainBody.table.subjects;
         }
+
+        console.log(this.props.mainBody.table.subjects, '看一下');
+
+        // for (let i = 0; i < 100; i++) {
+        //     data.push({
+        //         id: i,
+        //         c1: `北京 ${i} xxx 有限公司`,
+        //         c2: 18600190151,
+        //         c3: `状态 ${i}`,
+        //         c4: `asdf1`,
+        //         c5: `asdf2`,
+        //         c6: `asdf3`,
+        //         c7: `asdf4`,
+        //         c8: `asdf5`
+        //     });
+        // }
 
 
         const rowSelection = {
@@ -526,6 +936,7 @@ class MainBody extends React.Component {
             },
         };
 
+        console.log(this.props.mainBody);
 
         return (
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
@@ -583,9 +994,9 @@ class MainBody extends React.Component {
                 { /*筛选区域结束*/}
                 { /*图表模块开始*/}
                 <Content className="crm_filter">
-
-                    {this.renderSelectParams()}
-
+                    <Form layout="inline">
+                        {this.renderSelectParams()}
+                    </Form>
                 </Content>
                 {/*图表模块结束*/}
 

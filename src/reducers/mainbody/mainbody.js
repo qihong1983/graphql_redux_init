@@ -36,6 +36,7 @@ const mainBody = (state, action) => {
 
 
 
+
 		default:
 			//返回初始化
 			return state;

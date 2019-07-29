@@ -15,6 +15,14 @@ import {
 	mainBody
 } from "./mainbody/mainbody";
 
+import {
+	Concat
+} from "./concat/concat";
+
+import {
+	Customer
+} from "./customer/customer";
+
 
 import {
 	channelList
@@ -38,6 +46,8 @@ var Reducer = combineReducers({
 	shortLink,
 	channelGroup,
 	mainBody,
+	Concat,
+	Customer,
 	channelCost,
 	modelManager
 });

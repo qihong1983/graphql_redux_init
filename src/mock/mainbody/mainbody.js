@@ -57,6 +57,40 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
 	}]
 	);
 
+	Mock.mock("http://xxx.mock.com/crm/subject/list", "get", {
+		"pagination": {
+			"total_count": "@natural(100, 999)",
+			"page_count": "@natural(50, 100)",
+			"begin": "@natural(51, 99)",
+			"end": "@natural(51, 99)",
+			"index": "@natural(51, 99)"
+		},
+		"subjects|20": [
+			{
+				"id": "@natural(100, 999)",
+				"name": "@word(6)",
+				"id_code": "@integer()",
+				"phone": "@increment(1000)",
+				"province": "@province()",
+				"city": "@city()",
+				"county": "@region",
+				"location": "@ip()",
+				"address": "@county(true)",
+				"area_code": "@increment(10000)",
+				"email": "@email",
+				"note": "@cparagraph",
+				"type|1-2": "1",
+				"is_group|1-2": true,
+				"is_main|1-2": true,
+				"parent_subject_id": "@natural(100, 999)",
+				"status|1-2": true,
+				"created_at": "@datetime()",
+				"updated_at": "@datetime()"
+			}
+		]
+	}
+	);
+
 
 
 }
