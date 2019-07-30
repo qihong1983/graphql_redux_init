@@ -106,6 +106,8 @@ import {
 
 // import * as actionCreators from '../../actions/allTrend/allTrend';
 
+import * as actionCreators from '../../actions/concat/concat';
+
 const footer = () => 'Here is footer';
 
 
@@ -146,6 +148,114 @@ class SetParamList extends React.Component {
 
     }
 
+    componentWillReceiveProps(newProps) {
+        console.log(newProps.Concat.selectParam, 'newProps**');
+
+        var arr = [];
+
+        // display: "客户名称"
+        // is_default: true
+        // is_show: true
+        // is_table_show: true
+        // name: "name"
+        // type: "string"
+
+        var arr2 = [];
+
+        newProps.Concat.selectParam.map((v, k) => {
+
+            if (v.is_table_show) {
+                arr2.push(v.name)
+            }
+
+            arr.push({
+                "key": v.name,
+                "title": v.display,
+                "description": "",
+                "disabled": v.is_default
+            });
+
+        })
+
+
+        // var data = [
+        //     {
+        //         "key": "0",
+        //         "title": "客户姓名",
+        //         "description": "description of content1",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "1",
+        //         "title": "联系电话",
+        //         "description": "description of content2",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "2",
+        //         "title": "客户状态",
+        //         "description": "description of content3",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "3",
+        //         "title": "客户分级",
+        //         "description": "description of content4",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "4",
+        //         "title": "客户来源",
+        //         "description": "description of content5",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "5",
+        //         "title": "经营类型",
+        //         "description": "description of content6",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "6",
+        //         "title": "经营主体",
+        //         "description": "description of content7",
+        //         "disabled": true
+        //     },
+        //     {
+        //         "key": "7",
+        //         "title": "认证状态",
+        //         "description": "description of content8",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "8",
+        //         "title": "客户性质",
+        //         "description": "description of content9",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "9",
+        //         "title": "重要程度",
+        //         "description": "description of content10",
+        //         "disabled": true
+        //     }
+        // ]
+
+
+        const oriTargetKeys = arr2;
+        // const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
+
+
+        console.log(oriTargetKeys, 'oriTargetKeys');
+
+        this.setState({
+            transferData: arr,
+            targetKeys: oriTargetKeys,
+            selectedKeys: []
+        });
+
+    }
+
     componentWillMount() {
         NProgress.start();
     }
@@ -153,76 +263,76 @@ class SetParamList extends React.Component {
     componentDidMount() {
         NProgress.done();
 
-        var data = [
-            {
-                "key": "0",
-                "title": "客户姓名",
-                "description": "description of content1",
-                "disabled": false
-            },
-            {
-                "key": "1",
-                "title": "联系电话",
-                "description": "description of content2",
-                "disabled": false
-            },
-            {
-                "key": "2",
-                "title": "客户状态",
-                "description": "description of content3",
-                "disabled": false
-            },
-            {
-                "key": "3",
-                "title": "客户分级",
-                "description": "description of content4",
-                "disabled": false
-            },
-            {
-                "key": "4",
-                "title": "客户来源",
-                "description": "description of content5",
-                "disabled": false
-            },
-            {
-                "key": "5",
-                "title": "经营类型",
-                "description": "description of content6",
-                "disabled": false
-            },
-            {
-                "key": "6",
-                "title": "经营主体",
-                "description": "description of content7",
-                "disabled": true
-            },
-            {
-                "key": "7",
-                "title": "认证状态",
-                "description": "description of content8",
-                "disabled": false
-            },
-            {
-                "key": "8",
-                "title": "客户性质",
-                "description": "description of content9",
-                "disabled": false
-            },
-            {
-                "key": "9",
-                "title": "重要程度",
-                "description": "description of content10",
-                "disabled": true
-            }
-        ]
+        // var data = [
+        //     {
+        //         "key": "0",
+        //         "title": "客户姓名",
+        //         "description": "description of content1",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "1",
+        //         "title": "联系电话",
+        //         "description": "description of content2",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "2",
+        //         "title": "客户状态",
+        //         "description": "description of content3",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "3",
+        //         "title": "客户分级",
+        //         "description": "description of content4",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "4",
+        //         "title": "客户来源",
+        //         "description": "description of content5",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "5",
+        //         "title": "经营类型",
+        //         "description": "description of content6",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "6",
+        //         "title": "经营主体",
+        //         "description": "description of content7",
+        //         "disabled": true
+        //     },
+        //     {
+        //         "key": "7",
+        //         "title": "认证状态",
+        //         "description": "description of content8",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "8",
+        //         "title": "客户性质",
+        //         "description": "description of content9",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "9",
+        //         "title": "重要程度",
+        //         "description": "description of content10",
+        //         "disabled": true
+        //     }
+        // ]
 
-        const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
+        // const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
 
-        this.setState({
-            transferData: data,
-            targetKeys: oriTargetKeys,
-            selectedKeys: []
-        });
+        // this.setState({
+        //     transferData: data,
+        //     targetKeys: oriTargetKeys,
+        //     selectedKeys: []
+        // });
 
     }
 
@@ -316,25 +426,25 @@ class SetParamList extends React.Component {
 }
 
 
-//将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+// 将state.counter绑定到props的counter
+const mapStateToProps = (state) => {
+    return {
+        Concat: state.Reducer.Concat
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 SetParamList = Form.create()(SetParamList);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(SetParamList)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(SetParamList)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(SetParamList);

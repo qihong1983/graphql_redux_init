@@ -7,8 +7,8 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     Mock.mock("http://xxx.mock.com/crm/contact/metadata", "get", [{
         "name": "name",
         "display": "姓名",
-        "is_default": true,
-        "is_show": true,
+        "is_default": false,
+        "is_show": false,
         "is_table_show": true,
         "type": "string"
     }, {
@@ -60,7 +60,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
         "display": "决策关系",
         "is_default": false,
         "is_show": true,
-        "is_table_show":true,
+        "is_table_show": true,
         "type": "enum",
         "enums": [{ "key": 1, "value": "关键决策人" }, { "key": 2, "value": "分项决策人" }, { "key": 3, "value": "商务决策人" }, { "key": 4, "value": "技术决策人" }, { "key": 5, "value": "财务决策人" }, { "key": 6, "value": "使用人" }, { "key": 7, "value": "意见影响人" }, { "key": 8, "value": "普通人" }]
     }]

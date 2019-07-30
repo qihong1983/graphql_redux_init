@@ -7,14 +7,14 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     Mock.mock("http://xxx.mock.com/crm/partner/metadata", "get", [{
         "name": "name",
         "display": "客户名称",
-        "is_default": true,
+        "is_default": false,
         "is_show": true,
         "is_table_show": true,
         "type": "string"
     }, {
         "name": "state",
         "display": "客户状态",
-        "is_default": true,
+        "is_default": false,
         "is_show": true,
         "is_table_show": true,
         "type": "enum",
@@ -22,7 +22,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     }, {
         "name": "major_type",
         "display": "经营类型",
-        "is_default": true,
+        "is_default": false,
         "is_show": true,
         "is_table_show": true,
         "type": "enum",
@@ -68,13 +68,13 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
         "name": "phone",
         "display": "联系电话",
         "is_default": false,
-        "is_show": false,
+        "is_show": true,
         "is_table_show": true,
         "type": "string"
     }, {
         "name": "level",
         "display": "客户分级",
-        "is_default": false,
+        "is_default": true,
         "is_show": false,
         "is_table_show": true,
         "type": "enum",
@@ -82,7 +82,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     }, {
         "name": "origin",
         "display": "客户来源",
-        "is_default": false,
+        "is_default": true,
         "is_show": false,
         "is_table_show": true,
         "type": "enum",
@@ -90,7 +90,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     }, {
         "name": "subject_type",
         "display": "客户性质",
-        "is_default": false,
+        "is_default": true,
         "is_show": false,
         "is_table_show": true,
         "type": "enum",
@@ -98,7 +98,7 @@ if (window.location.search.indexOf("debug") > 0 || window.location.search.indexO
     }, {
         "name": "subject",
         "display": "经营主体",
-        "is_default": false,
+        "is_default": true,
         "is_show": false,
         "is_table_show": true,
         "type": "string"

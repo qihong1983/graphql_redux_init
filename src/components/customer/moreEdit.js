@@ -104,6 +104,7 @@ import {
 } from '../../common/utils';
 
 // import * as actionCreators from '../../actions/allTrend/allTrend';
+import * as actionCreators from '../../actions/customer/customer';
 
 const footer = () => 'Here is footer';
 
@@ -131,10 +132,46 @@ class MoreEdit extends React.Component {
         this.state = {
             isQuery: true,
             //新建客户
-            newCustomer: false
+            newCustomer: false,
+            editSelect: [],
+            showSelect: []
         }
 
     }
+
+    componentWillReceiveProps(newProps) {
+
+        console.log(newProps.Customer.selectParam, 'newPropsnewPropsnewProps');
+
+        // newProps.Customer.selectParam;
+
+        // display: "经营类型"
+        // enums: [{ "key": 1, "value": "快修" }, { "key": 2, "value": "综合" }, { "key": 3, "value": "轮胎" }, { "key": 4, "value": "专修" }, { "key": 5, "value": "4S" }]
+        // is_default: false
+        // is_show: true
+        // is_table_show: true
+        // name: "major_type"
+        // type: "enum"
+
+
+        var arr = [];
+        newProps.Customer.selectParam.map((v, k) => {
+            if (v.type == "enum") {
+                arr.push({
+                    key: v.name,
+                    value: v.display
+                });
+            }
+        })
+
+        this.setState({
+            editSelect: arr
+        });
+
+
+
+    }
+
 
     componentWillMount() {
         NProgress.start();
@@ -159,6 +196,43 @@ class MoreEdit extends React.Component {
 	 */
     moreEditCancel() {
         this.props.moreEditCancel();
+    }
+
+    renderSelectData() {
+
+        var arr = [];
+
+        this.state.editSelect.map((v, k) => {
+            arr.push(<Option value={v.key}>{v.value}</Option>)
+        })
+
+        return arr;
+    }
+
+    renderShowData() {
+        var arr = [];
+
+
+        this.state.showSelect.map((v, k) => {
+            arr.push(<Option value={v.key}>{v.value}</Option>)
+        })
+
+        return arr;
+    }
+
+    onChangeEditSelect(e) {
+
+        this.props.Customer.selectParam.map((v, k) => {
+            if (v.name == e) {
+
+                this.props.form.setFieldsValue({
+                    "show": v.enums[0].key
+                })
+                this.setState({
+                    showSelect: v.enums
+                });
+            }
+        })
     }
 
     render() {
@@ -228,9 +302,10 @@ class MoreEdit extends React.Component {
 
                         {/*选择编辑字段开始*/}
                         <FormItem label="选择编辑字段">
-                            {getFieldDecorator('reduce', {
+                            {getFieldDecorator('edit', {
                                 rules: [
                                     {
+                                        required: true,
                                         message: '选择编辑字段',
                                     }
                                 ]
@@ -238,15 +313,17 @@ class MoreEdit extends React.Component {
                                 <Select
                                     placeholder="选择编辑字段"
                                     dropdownMatchSelectWidth={true}
-                                    value={"1"}
+                                    onChange={this.onChangeEditSelect.bind(this)}
                                     className="online"
                                 >
-                                    <Option value="1">潜在客户</Option>
+
+                                    {this.renderSelectData()}
+                                    {/* <Option value="1">潜在客户</Option>
                                     <Option value="2">初步接触</Option>
                                     <Option value="3">持续跟进</Option>
                                     <Option value="4">成交客户</Option>
                                     <Option value="5">忠诚客户</Option>
-                                    <Option value="6">无效客户</Option>
+                                    <Option value="6">无效客户</Option> */}
                                 </Select>
                             )}
                         </FormItem>
@@ -255,9 +332,10 @@ class MoreEdit extends React.Component {
 
                         {/*展示选择字段开始*/}
                         <FormItem label="展示选择字段">
-                            {getFieldDecorator('reduce', {
+                            {getFieldDecorator('show', {
                                 rules: [
                                     {
+                                        required: true,
                                         message: '展示选择字段',
                                     }
                                 ]
@@ -265,15 +343,17 @@ class MoreEdit extends React.Component {
                                 <Select
                                     placeholder="展示选择字段"
                                     dropdownMatchSelectWidth={true}
-                                    value={"1"}
                                     className="online"
                                 >
-                                    <Option value="1">潜在客户</Option>
+
+                                    {this.renderShowData()}
+
+                                    {/* <Option value="1">潜在客户</Option>
                                     <Option value="2">初步接触</Option>
                                     <Option value="3">持续跟进</Option>
                                     <Option value="4">成交客户</Option>
                                     <Option value="5">忠诚客户</Option>
-                                    <Option value="6">无效客户</Option>
+                                    <Option value="6">无效客户</Option> */}
                                 </Select>
                             )}
                         </FormItem>
@@ -290,24 +370,24 @@ class MoreEdit extends React.Component {
 
 
 //将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+const mapStateToProps = (state) => {
+    return {
+        Customer: state.Reducer.Customer
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 MoreEdit = Form.create()(MoreEdit);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(MoreEdit)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(MoreEdit)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(MoreEdit);

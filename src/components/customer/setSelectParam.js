@@ -104,7 +104,7 @@ import {
     addKey
 } from '../../common/utils';
 
-// import * as actionCreators from '../../actions/allTrend/allTrend';
+import * as actionCreators from '../../actions/customer/customer';
 
 const footer = () => 'Here is footer';
 
@@ -145,8 +145,37 @@ class SetSelectParam extends React.Component {
         NProgress.start();
     }
 
-    componentDidMount() {
-        NProgress.done();
+
+    componentWillReceiveProps(newProps) {
+        console.log(newProps.Customer.selectParam, 'newProps**')
+
+        var arr = [];
+
+        // display: "客户名称"
+        // is_default: true
+        // is_show: true
+        // is_table_show: true
+        // name: "name"
+        // type: "string"
+
+        var arr2 = [];
+
+        newProps.Customer.selectParam.map((v, k) => {
+
+            if (v.is_show || v.is_default) {
+                arr2.push(v.name)
+            }
+            arr.push({
+                "key": v.name,
+                "title": v.display,
+                "description": "",
+                "disabled": v.is_default
+            });
+
+
+        })
+
+
 
         var data = [
             {
@@ -211,13 +240,98 @@ class SetSelectParam extends React.Component {
             }
         ]
 
-        const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
+
+        const oriTargetKeys = arr2;
+        // const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
+
+
+        console.log(oriTargetKeys, 'oriTargetKeys');
 
         this.setState({
-            transferData: data,
+            transferData: arr,
             targetKeys: oriTargetKeys,
             selectedKeys: []
         });
+
+    }
+    componentDidMount() {
+        NProgress.done();
+
+
+        console.log(this.props.Customer.selectParam, 'this.props.Customer.selectParam');
+
+
+
+        // var data = [
+        //     {
+        //         "key": "0",
+        //         "title": "客户姓名",
+        //         "description": "description of content1",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "1",
+        //         "title": "联系电话",
+        //         "description": "description of content2",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "2",
+        //         "title": "客户状态",
+        //         "description": "description of content3",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "3",
+        //         "title": "客户分级",
+        //         "description": "description of content4",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "4",
+        //         "title": "客户来源",
+        //         "description": "description of content5",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "5",
+        //         "title": "经营类型",
+        //         "description": "description of content6",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "6",
+        //         "title": "经营主体",
+        //         "description": "description of content7",
+        //         "disabled": true
+        //     },
+        //     {
+        //         "key": "7",
+        //         "title": "认证状态",
+        //         "description": "description of content8",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "8",
+        //         "title": "客户性质",
+        //         "description": "description of content9",
+        //         "disabled": false
+        //     },
+        //     {
+        //         "key": "9",
+        //         "title": "重要程度",
+        //         "description": "description of content10",
+        //         "disabled": true
+        //     }
+        // ]
+
+        // const oriTargetKeys = data.filter(item => +item.key % 3 > 1).map(item => item.key);
+
+        // this.setState({
+        //     transferData: data,
+        //     targetKeys: oriTargetKeys,
+        //     selectedKeys: []
+        // });
 
     }
 
@@ -280,6 +394,12 @@ class SetSelectParam extends React.Component {
 
         const { targetKeys, selectedKeys, disabled } = this.state;
 
+        console.log(this.props.Customer.selectParam, 'this.props.Customer.selectParam');
+
+        console.log(this.props.paramsData, 'this.props.paramsData');
+
+        console.log(this.state.aa, 'this.state.aa');
+
         return (
 
             <Modal
@@ -303,6 +423,8 @@ class SetSelectParam extends React.Component {
                         render={item => item.title}
                         disabled={disabled}
                     />
+
+
                 </Card>
             </Modal>
 
@@ -312,24 +434,24 @@ class SetSelectParam extends React.Component {
 
 
 //将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+const mapStateToProps = (state) => {
+    return {
+        Customer: state.Reducer.Customer
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 SetSelectParam = Form.create()(SetSelectParam);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(SetSelectParam)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(SetSelectParam)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(SetSelectParam);

@@ -44,6 +44,8 @@ import {
     LocaleProvider
 } from 'antd';
 
+
+import _ from 'lodash';
 const { confirm } = Modal;
 
 const ButtonGroup = Button.Group;
@@ -172,7 +174,8 @@ class MainBody extends React.Component {
             limit: 10,
             provinceArr: [],
             cityArr: [],
-            countyArr: []
+            countyArr: [],
+            moreRows: []
         }
 
     }
@@ -194,20 +197,16 @@ class MainBody extends React.Component {
     async init() {
 
         //省数据
-
-        this.getProvince();
+        await this.getProvince();
 
         //市数据
-
-        this.getCity();
+        await this.getCity();
 
         //区数据
-
-        this.getCounty();
+        await this.getCounty();
 
         //获取筛选
         await this.getParams();
-
 
         //获取表格
         await this.getTable();
@@ -297,7 +296,7 @@ class MainBody extends React.Component {
                 <Col span={10} >
                     <Form layout="inline" className="clearfix">
                         <FormItem label="已选">
-                            0条
+                            {this.state.moreRows.length}条
 
 				</FormItem>
                         <FormItem label="批量">
@@ -820,6 +819,39 @@ class MainBody extends React.Component {
 
         console.log(this.state, '### this.state ###');
 
+        var configRender = "name";
+        var configIsGroupRender = "is_group";
+        var configRightFixed = "county";
+
+        this.props.mainBody.columns.map((v, k) => {
+
+
+            if (_.includes(v, configRender)) {
+                v.render = (title, record) => {
+                    return (
+                        <a href="javascript:void();" data-id={record.id} onClick={this.openDrawer.bind(this)}>{title}</a>
+                    )
+                }
+            } else if (_.includes(v, configIsGroupRender)) {
+                render: (text, record) => {
+
+                    console.log(text, 'text');
+                    var word = "是";
+                    if (text) {
+                        word = "是";
+                    } else {
+                        word = "否";
+                    }
+                    return (<span>{word}</span>)
+                }
+
+            } else if (this.props.mainBody.columns.length - 1 == k) {
+                v.fixed = "right";
+            }
+
+
+        });
+
         const columns = [
             {
                 title: '公司名称/姓名',
@@ -927,6 +959,9 @@ class MainBody extends React.Component {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                this.setState({
+                    moreRows: selectedRows
+                })
             },
             onSelect: (record, selected, selectedRows) => {
                 console.log(record, selected, selectedRows);
@@ -956,7 +991,8 @@ class MainBody extends React.Component {
 					newCustomerOk 确定提交
 					newCustomerCannel 取消提交
 					refreshTable 刷新表格数据
-				*/}
+                */}
+
                 <CreateMainBody
                     show={this.state.newCustomer}
                     newCustomerOk={this.newCustomerOk.bind(this)}
@@ -1005,7 +1041,8 @@ class MainBody extends React.Component {
                     <Card>
                         <Spin spinning={false}>
                             {/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 2200, y: 300 }} /> */}
-                            <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 1300, y: 300 }} pagination={false} />
+                            <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={this.props.mainBody.columns} dataSource={data} scroll={{ x: 1300, y: 300 }} pagination={false} />
+                            {/* <Table footer={() => this.tableFooter()} rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ x: 1300, y: 300 }} pagination={false} /> */}
                         </Spin>
                     </Card>
                 </Content>

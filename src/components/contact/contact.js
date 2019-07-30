@@ -151,7 +151,8 @@ class Contact extends React.Component {
             importance: "",
             decision: 1,
             page: 1,
-            limit: 0
+            limit: 0,
+            moreRows: []
         }
 
     }
@@ -312,7 +313,7 @@ class Contact extends React.Component {
                 <Col span={10} >
                     <Form layout="inline" className="clearfix">
                         <FormItem label="已选">
-                            0条
+                            {this.state.moreRows.length}条
 
 				</FormItem>
                         <FormItem label="批量">
@@ -416,7 +417,6 @@ class Contact extends React.Component {
             drawerVisible: true
         });
     }
-
 
 
 	/**
@@ -525,14 +525,25 @@ class Contact extends React.Component {
      * @method onClickMoreDelete
      */
     onClickMoreDelete(e) {
-        Modal.warning({
-            title: '确定要删除吗',
-            content: '确定要删除吗',
-            okText: '删除',
-            onOk: () => {
-                console.log('111');
-            }
-        });
+        // Modal.warning({
+        //     title: '确定要删除吗',
+        //     content: '确定要删除吗',
+        //     okText: '删除',
+        //     onOk: () => {
+        //         console.log('111');
+        //     }
+        // });
+
+        confirm({
+			title: '确定要删除吗?',
+			content: '确定要删除吗',
+			onOk() {
+				console.log('OK');
+			},
+			onCancel() {
+				console.log('Cancel');
+			},
+		});
     }
 
 
@@ -588,7 +599,7 @@ class Contact extends React.Component {
                 if (v.type == "enum") {
                     // initialValue: v.enums[0].key,
                     console.log(v, '####');
-                    if (v.is_show) {
+                    if (v.is_show || v.is_default) {
                         arr.push(<FormItem label={v.display} key={v.name}>
 
                             {getFieldDecorator(v.name, {
@@ -678,7 +689,6 @@ class Contact extends React.Component {
         } = this.props.form;
 
 
-
         var configRender = "name";
         var configPartnerRender = "partner";
         var configRightFixed = "county";
@@ -691,7 +701,7 @@ class Contact extends React.Component {
             if (_.includes(v, configRender)) {
                 v.render = (title) => {
                     return (
-                        <a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
+                        <a href="javascript:void();" onClick={this.openDrawerContact.bind(this)}>{title}</a>
                     )
                 }
             } else if (_.includes(v, configPartnerRender)) {
@@ -719,6 +729,10 @@ class Contact extends React.Component {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+
+                this.setState({
+                    moreRows: selectedRows
+                })
             },
             onSelect: (record, selected, selectedRows) => {
                 console.log(record, selected, selectedRows);

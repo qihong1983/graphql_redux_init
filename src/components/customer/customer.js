@@ -166,7 +166,8 @@ class Customer extends React.Component {
 			subject: "",
 			wx_room_name: "",
 			page: 1,
-			limit: 1
+			limit: 1,
+			moreRows: []
 		}
 
 
@@ -229,7 +230,9 @@ class Customer extends React.Component {
 			subject: "",
 			wx_room_name: "",
 			page: this.state.page,
-			limit: this.state.limit
+			limit: this.state.limit,
+			moreRows: [],
+			drawerDetailId: ""
 		}
 
 
@@ -434,13 +437,18 @@ class Customer extends React.Component {
 	}
 
 	tableFooter() {
+
+		console.log(this.state.moreRows, 'this.state.moreRows');
+
+
+
 		return (
 
 			<Row gutter={24}>
 				<Col span={10} >
 					<Form layout="inline" className="clearfix">
 						<FormItem label="已选">
-							0条
+							{this.state.moreRows.length}条
 						</FormItem>
 						<FormItem label="批量">
 							<Button type="default" style={{ marginRight: "10px" }} onClick={this.onClickMoreEdit.bind(this)}>编辑</Button>
@@ -535,8 +543,12 @@ class Customer extends React.Component {
 		});
 	}
 
-	openDrawer() {
+	openDrawer(e) {
+
+		console.log(e.target.dataset.id, 'eeeeeeeeeeeee');
+
 		this.setState({
+			drawerDetailId: e.target.dataset.id,
 			drawerVisible: true
 		});
 	}
@@ -833,7 +845,7 @@ class Customer extends React.Component {
 
 					// initialValue: v.enums[0].key,
 
-					if (v.is_show) {
+					if (v.is_show || v.is_default) {
 						arr.push(<FormItem label={v.display} key={v.name}>
 
 							{getFieldDecorator(v.name, {
@@ -912,9 +924,9 @@ class Customer extends React.Component {
 
 
 			if (_.includes(v, configRender)) {
-				v.render = (title) => {
+				v.render = (title, record) => {
 					return (
-						<a href="javascript:void();" onClick={this.openDrawer.bind(this)}>{title}</a>
+						<a href="javascript:void();" data-id={record.id} onClick={this.openDrawer.bind(this)}>{title}</a>
 					)
 				}
 			} else if (this.props.Customer.columns.length - 1 == k) {
@@ -1050,6 +1062,8 @@ class Customer extends React.Component {
 		if (this.props.Customer.table) {
 			data = this.props.Customer.table.subjects;
 		}
+
+
 		// for (let i = 0; i < 100; i++) {
 		// 	data.push({
 		// 		id: i,
@@ -1073,12 +1087,22 @@ class Customer extends React.Component {
 
 		const rowSelection = {
 			onChange: (selectedRowKeys, selectedRows) => {
+
+				console.log(this);
 				console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+				console.log(selectedRows, 'selectedRowsselectedRowsselectedRowsselectedRows');
+
+				this.setState({
+					moreRows: selectedRows
+				});
 			},
 			onSelect: (record, selected, selectedRows) => {
+
+				console.log(this);
 				console.log(record, selected, selectedRows);
 			},
 			onSelectAll: (selected, selectedRows, changeRows) => {
+				console.log(this);
 				console.log(selected, selectedRows, changeRows);
 			},
 		};
@@ -1164,6 +1188,7 @@ class Customer extends React.Component {
 					paramsListVisible={this.state.setSelectVisible}
 					paramsListOk={this.setSelectOk.bind(this)}
 					paramsListCancel={this.setSelectCancel.bind(this)}
+					paramsData={this.props.Customer.selectParam}
 				/>
 
 				{/* 筛选项设置结束 */}
@@ -1189,6 +1214,7 @@ class Customer extends React.Component {
 				  */}
 
 				<CustomerDrawer
+					drawerDetailId={this.state.drawerDetailId}
 					onCloseDrawer={this.onCloseDrawer.bind(this)}
 					drawerVisible={this.state.drawerVisible}
 				/>

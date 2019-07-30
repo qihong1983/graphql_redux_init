@@ -73,7 +73,6 @@ const getSelectParam = (data) => {
                 payload: msg
             });
 
-            console.log(msg, 'msgmsgmsgmsg');
 
             var arr = [];
 

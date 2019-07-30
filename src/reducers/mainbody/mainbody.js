@@ -11,7 +11,8 @@ const mainBody = (state, action) => {
 		//初始化
 		return {
 			selectParam: [],
-			table: []
+			table: [],
+			columns: []
 		};
 	}
 
@@ -30,6 +31,12 @@ const mainBody = (state, action) => {
 			//经营主体-- 表格
 			return Object.assign({}, state, {
 				table: action.payload
+			});
+
+		case "MAINBODY_COLUMNS":
+			//经营主体-- 表格
+			return Object.assign({}, state, {
+				columns: action.payload
 			});
 
 		// columns1

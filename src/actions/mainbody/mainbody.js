@@ -66,7 +66,31 @@ const getSelectParam = (data) => {
 				payload: msg
 			});
 
-			console.log(msg, 'msgmsgmsgmsg');
+			var arr = [];
+
+
+			// _.includes(v, configRender)
+
+			msg.map((v, k) => {
+				if (v.is_table_show) {
+
+					arr.push({
+						title: v.display,
+						width: 150,
+						dataIndex: v.name,
+						key: v.name
+					});
+
+				}
+			})
+
+			await dispatch({
+				type: "MAINBODY_COLUMNS",
+				payload: arr
+			});
+
+
+
 		});
 	}
 }
