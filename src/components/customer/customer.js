@@ -28,6 +28,7 @@ import {
 	Pagination,
 	Button,
 	Select,
+	message,
 	Table,
 	DatePicker,
 	Tabs,
@@ -102,7 +103,11 @@ import moment from 'moment';
 
 import NProgress from 'nprogress';
 
+//创建客户
 import CreateCustomer from './createCustomer';
+
+//编辑客户
+import EditCustomer from './editCustomer';
 import CustomerDrawer from './customerDrawer';
 
 const dateFormat = 'YYYY-MM-DD';
@@ -122,11 +127,14 @@ import SetSelectParam from './setSelectParam';
 
 import MoreEdit from './moreEdit';
 
+import CreateMainBody from '../mainbody/createMainBody';
+
+
+
 
 import * as actionCreators from '../../actions/customer/customer';
 
 const footer = () => 'Here is footer';
-
 
 
 class Customer extends React.Component {
@@ -138,6 +146,10 @@ class Customer extends React.Component {
 			isQuery: true,
 			//新建客户
 			newCustomer: false,
+			editCustomerVisible: false,
+			//新建经营主体
+			mainBodyVisible: false,
+			mainBodyType: 1,
 			//抽屉
 			drawerVisible: false,
 			//客户管理 -- 列表字段控制显示隐藏
@@ -214,25 +226,43 @@ class Customer extends React.Component {
 
 
 	async getTable() {
+		// var params = {
+		// 	name: this.state.name,
+		// 	state: this.state.state,
+		// 	major_type: this.state.major_type,
+		// 	auth_status: this.state.auth_status,
+		// 	importance: this.state.importance,
+		// 	province: this.state.province,
+		// 	city: this.state.city,
+		// 	county: this.state.county,
+		// 	phone: this.state.phone,
+		// 	level: this.state.level,
+		// 	origin: this.state.origin,
+		// 	subject_type: this.state.subject_type,
+		// 	subject: this.state.subject,
+		// 	wx_room_name: "",
+		// 	page: this.state.page,
+		// 	limit: this.state.limit,
+		// 	moreRows: [],
+		// 	drawerDetailId: ""
+		// }
+
+
 		var params = {
-			name: "",
-			state: 1,
-			major_type: 1,
-			auth_status: "",
-			importance: 1,
-			province: "",
-			city: "",
-			county: "",
-			phone: "",
-			level: 1,
-			origin: 1,
-			subject_type: "",
-			subject: "",
-			wx_room_name: "",
-			page: this.state.page,
-			limit: this.state.limit,
-			moreRows: [],
-			drawerDetailId: ""
+			"name": this.state.name,
+			"state": this.state.state,
+			"major_type": this.state.major_type,
+			"auth_status": this.state.auth_status,
+			"importance": this.state.importance,
+			"province": this.state.province,
+			"city": this.state.city,
+			"county": this.state.county,
+			"phone": this.state.phone,
+			"level": this.state.level,
+			"origin": this.state.origin,
+			"subject_type": this.state.subject_type,
+			"subject": this.state.subject,
+			"wx_room_name": this.state.wx_room_name
 		}
 
 
@@ -421,7 +451,6 @@ class Customer extends React.Component {
 
 		console.log(current, pageSize, '*****************');
 
-
 	}
 
 	changePagination(current, size) {
@@ -439,8 +468,6 @@ class Customer extends React.Component {
 	tableFooter() {
 
 		console.log(this.state.moreRows, 'this.state.moreRows');
-
-
 
 		return (
 
@@ -476,7 +503,22 @@ class Customer extends React.Component {
 	 * @method refreshTable
 	 */
 	refreshTable() {
-		console.log('刷新列表');
+		this.setState({
+			page: 1
+		}, () => {
+			this.getTable();
+		})
+	}
+
+	editRefreshTable() {
+		this.setState({
+			page: 1
+		}, () => {
+
+			this.getTable();
+			this.props.detailFn(this.state.drawerDetailId);
+
+		})
 	}
 
 	/**
@@ -488,6 +530,30 @@ class Customer extends React.Component {
 			newCustomer: true
 		});
 	}
+
+
+	/**
+	 * 编辑客户 -- 确认编辑客户
+	 * @method editCustomerOk
+	 */
+	editCustomerOk(data) {
+		console.log('确认新建客户');
+		this.setState({
+			editCustomerVisible: data
+		});
+	}
+
+	/**
+	 * 编辑客户 -- 取消编辑客户
+	 * @method newCustomerCannel
+	 */
+	editCustomerCannel(data) {
+		console.log('取消新建客户');
+		this.setState({
+			editCustomerVisible: data
+		});
+	}
+
 
 	/**
 	 * 新建客户 -- 确认新建客户
@@ -545,11 +611,11 @@ class Customer extends React.Component {
 
 	openDrawer(e) {
 
-		console.log(e.target.dataset.id, 'eeeeeeeeeeeee');
-
 		this.setState({
 			drawerDetailId: e.target.dataset.id,
 			drawerVisible: true
+		}, () => {
+			this.props.detailFn(this.state.drawerDetailId);
 		});
 	}
 
@@ -587,6 +653,8 @@ class Customer extends React.Component {
 	paramsListOk() {
 		this.setState({
 			paramsListVisible: false
+		}, () => {
+			message.success('已保存到本地存储');
 		});
 	}
 
@@ -620,6 +688,8 @@ class Customer extends React.Component {
 	setSelectOk() {
 		this.setState({
 			setSelectVisible: false
+		}, () => {
+			message.success('已保存到本地存储');
 		});
 	}
 
@@ -654,7 +724,6 @@ class Customer extends React.Component {
 	setSelect(e, option) {
 		console.log(e, option, '###');
 		console.log(option.props.type, 'option.props.type');
-
 
 		switch (option.props.type) {
 			case "type":
@@ -905,13 +974,45 @@ class Customer extends React.Component {
 
 	}
 
+
+	/**
+	 * 新建经营主体
+	 */
+	createMainBodyOk() {
+		this.setState({
+			mainBodyVisible: false
+		});
+	}
+
+	createMainBodyCannel() {
+		this.setState({
+			mainBodyVisible: false
+		});
+	}
+
+	createMainBodyRefreshTable() {
+		console.log('刷新');
+	}
+
+
+
+	openEditCustomer() {
+		this.setState({
+			editCustomerVisible: true
+		});
+	}
+
+	openMainBody() {
+		this.setState({
+			mainBodyVisible: true
+		});
+	}
+
 	render() {
 
 		const {
 			getFieldDecorator
 		} = this.props.form;
-
-
 
 		// this.props.Customer.columns
 
@@ -1060,7 +1161,7 @@ class Customer extends React.Component {
 
 
 		if (this.props.Customer.table) {
-			data = this.props.Customer.table.subjects;
+			data = this.props.Customer.table.partners;
 		}
 
 
@@ -1162,6 +1263,19 @@ class Customer extends React.Component {
 			<Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
 
 
+				{/* 新建经营主体 */}
+
+				<CreateMainBody
+					zIndex={1001}
+					show={this.state.mainBodyVisible}
+					newCustomerOk={this.createMainBodyOk.bind(this)}
+					newCustomerCannel={this.createMainBodyCannel.bind(this)}
+					refreshTable={this.createMainBodyRefreshTable.bind(this)}
+					mainBodyType={this.state.mainBodyType}
+					
+				/>
+
+
 				{/* 批量编辑开始 */}
 				<MoreEdit
 					moreEditVisible={this.state.moreEditVisible}
@@ -1204,16 +1318,31 @@ class Customer extends React.Component {
 					newCustomerOk={this.newCustomerOk.bind(this)}
 					newCustomerCannel={this.newCustomerCannel.bind(this)}
 					refreshTable={this.refreshTable.bind(this)}
+					open={this.openMainBody.bind(this)}
 				/>
 
 
 				{/* 新建客户结束 */}
+
+
+				{/* 编辑客户开始 */}
+
+				<EditCustomer
+					show={this.state.editCustomerVisible}
+					newCustomerOk={this.editCustomerOk.bind(this)}
+					newCustomerCannel={this.editCustomerCannel.bind(this)}
+					refreshTable={this.editRefreshTable.bind(this)}
+					open={this.openMainBody.bind(this)}
+				/>
+
+				{/* 编辑客户结束 */}
 
 				{/**
 				  * 抽屉--详情
 				  */}
 
 				<CustomerDrawer
+					openEditCustomer={this.openEditCustomer.bind(this)}
 					drawerDetailId={this.state.drawerDetailId}
 					onCloseDrawer={this.onCloseDrawer.bind(this)}
 					drawerVisible={this.state.drawerVisible}

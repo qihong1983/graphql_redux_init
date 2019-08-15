@@ -35,6 +35,7 @@ import {
     Tabs,
     Spin,
     Alert,
+    message,
     Row,
     Col,
     Divider,
@@ -108,15 +109,25 @@ import {
 import * as actionCreators from '../../actions/concat/concat';
 
 
+import * as actionCustomer from '../../actions/customer/customer';
+
 
 const footer = () => 'Here is footer';
 
+
+//新建组件
 import CreateContact from './createContact';
+
+//编辑组件 
+import EditContact from './editContact';
+
 
 
 import CustomerDrawer from '../customer/customerDrawer';
 import ContactDrawer from './contactDrawer';
 
+//新建客户
+import CreateCustomer from '../customer/createCustomer';
 
 import SetParamList from './setParamList';
 
@@ -133,7 +144,11 @@ class Contact extends React.Component {
 
         this.state = {
             isQuery: true,
+            //新建联系人是否显示
             newCustomer: false,
+            //新建客户
+            customerVisible: false,
+            editContact: false,
             drawerVisible: false,
             drawerVisible: false,
             //联系人 -- 列表字段控制显示隐藏
@@ -152,7 +167,10 @@ class Contact extends React.Component {
             decision: 1,
             page: 1,
             limit: 0,
-            moreRows: []
+            moreRows: [],
+            contactDetailId: "",
+            customerDetailId: ""
+
         }
 
     }
@@ -186,7 +204,7 @@ class Contact extends React.Component {
 
     async getParam() {
 
-        this.props.getSelectParam();
+        this.props.ContactActions.getSelectParam();
     }
 
     async getTable() {
@@ -204,7 +222,7 @@ class Contact extends React.Component {
             limit: this.state.limit
         }
 
-        await this.props.getTableData(params);
+        await this.props.ContactActions.getTableData(params);
     }
 
 
@@ -274,7 +292,38 @@ class Contact extends React.Component {
 
 
 
+    /**
+     * 打开编辑联系人
+     * @method openEditContact
+     */
+    openEditContact() {
+        console.log('打开联系人');
 
+        // this.props.editContact();
+
+        this.setState({
+            editContact: true
+        });
+
+    }
+
+    /**
+     * 提交编辑联系人
+     */
+    editContactOK() {
+        this.setState({
+            editContact: false
+        });
+    }
+
+    /**
+     * 关闭编辑联系人
+     */
+    editContactCancel() {
+        this.setState({
+            editContact: false
+        });
+    }
 
     displayAuthhors() {
         var data = this.props.getAuthorsQuery;
@@ -300,6 +349,31 @@ class Contact extends React.Component {
                 return (<div key={book.id} onClick={(e) => { this.setState({ selected: book.id }) }}>{book.name}</div>)
             })
         }
+    }
+
+    /**
+     * 新建客户
+     */
+    createCustomerOk() {
+        this.setState({
+            customerVisible: false
+        });
+    }
+
+    createCustomerCannel() {
+        this.setState({
+            customerVisible: false
+        });
+    }
+
+    createRefreshTable() {
+        console.log('刷新数据');
+    }
+
+    openCustomer() {
+        this.setState({
+            customerVisible: true
+        });
     }
 
     tableFooter() {
@@ -337,6 +411,18 @@ class Contact extends React.Component {
             </Row>
         )
     }
+
+
+    /**
+ *  编辑联系人 -- 打开
+ * @method newCustomer
+ */
+    editContact() {
+        this.setState({
+            editContact: true
+        });
+    }
+
 
 	/**
 	 *  新建客户 -- 打开
@@ -376,7 +462,31 @@ class Contact extends React.Component {
 	 * @method refreshTable
 	 */
     refreshTable() {
-        console.log('刷新列表');
+        // console.log('刷新列表');
+
+        this.setState({
+            page: 1
+        }, () => {
+            this.getTable();
+            //刷新详情
+            this.props.ContactActions.contactDetailFn(this.state.contactDetailId);
+        });
+
+    }
+
+
+    /**
+     * 编辑后刷新联系人详情和页面表格
+     * @method refreshTableEdit
+     */
+    refreshTableEdit() {
+        this.setState({
+            page: 1
+        }, () => {
+            this.getTable();
+            //刷新详情
+            this.props.ContactActions.contactDetailFn(this.state.contactDetailId);
+        });
     }
 
     /**
@@ -403,18 +513,26 @@ class Contact extends React.Component {
     /**
      * 联系人  -- 详情
      */
-    openDrawerContact() {
+    openDrawerContact(e) {
         this.setState({
+            contactDetailId: e.target.dataset.id,
             drawerContactVisible: true
+        }, () => {
+            this.props.ContactActions.contactDetailFn(this.state.contactDetailId);
         });
     }
 
     /**
      * 客户管理 -- 打开详情
      */
-    openDrawer() {
+    openDrawer(e) {
         this.setState({
+            customerDetailId: e.target.dataset.id,
             drawerVisible: true
+        }, () => {
+            this.props.CustomerActions.detailFn(this.customerDetailId);
+
+            // this.props.detailFn(this.state.drawerDetailId);
         });
     }
 
@@ -438,6 +556,8 @@ class Contact extends React.Component {
     paramsListOk() {
         this.setState({
             paramsListVisible: false
+        }, () => {
+            message.success('已保存到本地存储');
         });
     }
 
@@ -471,6 +591,8 @@ class Contact extends React.Component {
     setSelectOk() {
         this.setState({
             setSelectVisible: false
+        }, () => {
+            message.success('已保存到本地存储');
         });
     }
 
@@ -535,15 +657,15 @@ class Contact extends React.Component {
         // });
 
         confirm({
-			title: '确定要删除吗?',
-			content: '确定要删除吗',
-			onOk() {
-				console.log('OK');
-			},
-			onCancel() {
-				console.log('Cancel');
-			},
-		});
+            title: '确定要删除吗?',
+            content: '确定要删除吗',
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     }
 
 
@@ -699,9 +821,9 @@ class Contact extends React.Component {
 
 
             if (_.includes(v, configRender)) {
-                v.render = (title) => {
+                v.render = (title, record) => {
                     return (
-                        <a href="javascript:void();" onClick={this.openDrawerContact.bind(this)}>{title}</a>
+                        <a href="javascript:void();" data-id={record.id} onClick={this.openDrawerContact.bind(this)}>{title}</a>
                     )
                 }
             } else if (_.includes(v, configPartnerRender)) {
@@ -746,6 +868,22 @@ class Contact extends React.Component {
         return (
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
 
+                {/**
+                    //新建客户
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+                <CreateCustomer
+                    zIndex={1001}
+                    show={this.state.customerVisible}
+                    newCustomerOk={this.createCustomerOk.bind(this)}
+                    newCustomerCannel={this.createCustomerCannel.bind(this)}
+                    refreshTable={this.createRefreshTable.bind(this)}
+                />
+
+
                 {/* 批量编辑开始 */}
                 <MoreEdit
                     moreEditVisible={this.state.moreEditVisible}
@@ -765,48 +903,62 @@ class Contact extends React.Component {
                     newCustomerOk={this.newCustomerOk.bind(this)}
                     newCustomerCannel={this.newCustomerCannel.bind(this)}
                     refreshTable={this.refreshTable.bind(this)}
+                    open={this.openCustomer.bind(this)}
                 />
 
 
                 {/**
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+                <EditContact
+                    show={this.state.editContact}
+                    newCustomerOk={this.editContactOK.bind(this)}
+                    newCustomerCannel={this.editContactCancel.bind(this)}
+                    refreshTable={this.refreshTableEdit.bind(this)}
+                    open={this.openCustomer.bind(this)}
+                />
+
+                {/**
 				  * 抽屉--客户详情
 				  */}
-
                 <CustomerDrawer
+                    drawerDetailId={this.state.customerDetailId}
                     onCloseDrawer={this.onCloseDrawer.bind(this)}
                     drawerVisible={this.state.drawerVisible}
+                    noEdit={true}
                 />
 
                 {/**
                  * 抽屉--联系人
                  */}
                 <ContactDrawer
+                    contactDetailId={this.state.contactDetailId}
+                    openEditContact={this.openEditContact.bind(this)}
                     onCloseDrawer={this.onCloseDrawerContact.bind(this)}
                     drawerVisible={this.state.drawerContactVisible}
                 />
 
 
                 {/* 列表字段设置开始 */}
-
-
                 <SetParamList
                     paramsListVisible={this.state.paramsListVisible}
                     paramsListOk={this.paramsListOk.bind(this)}
                     paramsListCancel={this.paramsListCancel.bind(this)}
                 />
-
-
                 {/* 列表字段设置结束 */}
 
-                {/* 筛选项设置开始 */}
 
+                {/* 筛选项设置开始 */}
                 <SetSelectParam
                     paramsListVisible={this.state.setSelectVisible}
                     paramsListOk={this.setSelectOk.bind(this)}
                     paramsListCancel={this.setSelectCancel.bind(this)}
                 />
-
                 {/* 筛选项设置结束 */}
+
 
                 { /*筛选区域开始*/}
                 <Content className="channel_filter">
@@ -866,14 +1018,20 @@ class Contact extends React.Component {
 //将state.counter绑定到props的counter
 const mapStateToProps = (state) => {
     return {
-        Concat: state.Reducer.Concat
+        Concat: state.Reducer.Concat,
+        Customer: state.Reducer.Customer
     }
 };
 
 //将action的所有方法绑定到props上
 const mapDispatchToProps = (dispatch, ownProps) => {
     //全量
-    return bindActionCreators(actionCreators, dispatch);
+    // return bindActionCreators(actionCreators, dispatch);
+
+    return {
+        ContactActions: bindActionCreators(actionCreators, dispatch),
+        CustomerActions: bindActionCreators(actionCustomer, dispatch)
+    }
 };
 
 Contact = Form.create()(Contact);

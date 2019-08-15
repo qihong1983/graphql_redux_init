@@ -104,7 +104,7 @@ import {
     addKey
 } from '../../common/utils';
 
-// import * as actionCreators from '../../actions/allTrend/allTrend';
+import * as actionCreators from '../../actions/concat/concat';
 
 const footer = () => 'Here is footer';
 
@@ -137,6 +137,15 @@ class ContactDrawer extends React.Component {
 
     }
 
+    componentWillReceiveProps(newProps) {
+
+        // console.log(newProps.drawerDetailId, 'newProps.drawerDetailId');
+
+        console.log(newProps, 'newProps.Customer.tablenewProps.Customer.table');
+
+
+    }
+
     componentWillMount() {
         NProgress.start();
     }
@@ -147,14 +156,21 @@ class ContactDrawer extends React.Component {
 
     }
 
+    /**
+     * 打开联系人
+     * @method openEditContact
+     */
+    openEditContact() {
+        this.props.openEditContact();
+    }
 
     DrawerHeader() {
         return (<div className="clearfix">
             <div className="pull-left">
-                张先生
-			</div>
+                {this.props.Concat.detail.result != undefined ? this.props.Concat.detail.result.name : ""}
+            </div>
             <div className="pull-right">
-                <Button type="primary">
+                <Button type="primary" onClick={this.openEditContact.bind(this)}>
                     编辑
 				</Button>
             </div>
@@ -170,6 +186,66 @@ class ContactDrawer extends React.Component {
         this.props.onCloseDrawer();
     }
 
+
+    renderDetail() {
+
+        console.log(this.props.Concat.detail, 'this.props.Concat.detail');
+        // var detail = this.props.Concat.detail.length != 0 ? this.props.Concat.detail.result : [];
+
+
+
+        var detail = this.props.Concat.detail.result;
+
+        console.log(this.props.Concat, '###################################');
+
+        console.log(detail, '******************************************************************');
+
+        if (detail != undefined) {
+
+
+            console.log(detail, 'detail');
+
+
+            return (<div>
+
+                <p>姓名: {detail.name}</p>
+                <p>联系电话: {detail.phone}</p>
+                <p>关联经营客户名称: {detail.partner_name}</p>
+                <p>省: {detail.province}</p>
+                <p>市: {detail.city}</p>
+                <p>区: {detail.county}</p>
+                <p>经纬度: {detail.location}</p>
+                <p>详细地址: {detail.address}</p>
+                <p>区域编码: {detail.area_code}</p>
+
+
+                <p>微信名: {detail.wx_name}</p>
+                <p>微信: {detail.wx_id}</p>
+
+
+                <p>邮箱: {detail.email}</p>
+                <p>qq: {detail.qq}</p>
+                <p>职务: {detail.title}</p>
+                <p>级别: {detail.rank}</p>
+
+
+
+
+                <p>重要程度: {detail.importance}</p>
+                <p>决策关系: {detail.decision}</p>
+                <p>亲密度: {detail.affinity}</p>
+                <p>性别: {detail.gender}</p>
+
+
+                {/* <p>公历/阴历: {detail.birthday.type}</p>
+                <p>生日: {detail.birthday.date}</p> */}
+                <p>备注: {detail.note}</p>
+
+            </div>)
+        }
+
+
+    }
 
     render() {
 
@@ -235,7 +311,9 @@ class ContactDrawer extends React.Component {
                     onClose={this.onCloseDrawer.bind(this)}
                     visible={this.props.drawerVisible}
                 >
-                    <p>姓名： 张先生</p>
+
+                    {this.renderDetail()}
+                    {/* <p>姓名： 张先生</p>
 
                     <p>联系电话： 13666666666</p>
 
@@ -263,7 +341,7 @@ class ContactDrawer extends React.Component {
 
                     <p>生日：- - -</p>
 
-                    <p>备注： - - -</p>
+                    <p>备注： - - -</p> */}
                 </Drawer>
 
 
@@ -275,24 +353,24 @@ class ContactDrawer extends React.Component {
 
 
 //将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+const mapStateToProps = (state) => {
+    return {
+        Concat: state.Reducer.Concat
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 ContactDrawer = Form.create()(ContactDrawer);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(ContactDrawer)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(ContactDrawer)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDrawer);

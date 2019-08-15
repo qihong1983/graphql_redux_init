@@ -127,7 +127,7 @@ function onShowSizeChange(current, pageSize) {
  * refreshTable 刷新表格数据
 */
 
-class CreateMainBody extends React.Component {
+class EditMainBody extends React.Component {
 
     constructor(props) {
         super(props);
@@ -136,7 +136,54 @@ class CreateMainBody extends React.Component {
             isQuery: true,
             //新建客户
             newCustomer: false,
-            value: 2
+            value: 1
+        }
+
+    }
+
+
+    componentWillReceiveProps(nextProps) {
+
+        if (!_.isEqual(this.props.MainBody.detail, nextProps.MainBody.detail)) {
+            var result = nextProps.MainBody.detail.result;
+
+
+
+
+
+            var params = {
+                "name": result.name,
+                "abbreviation": result.abbreviation ? result.abbreviation : "",
+                "selectMainBody": result.type,
+                "id_code": result.id_code,
+                "state": result.state,
+                "level": result.level,
+                "origin": result.origin,
+                "major_type": result.major_type,
+                "phone": result.phone,
+                "province": result.province,
+                "city": result.city,
+                "county": result.county,
+                "location": result.location,
+                "address": result.address,
+                "area_code": result.area_code,
+                "subject_type": result.subject_type,
+                "subject_id": result.subject_id,
+                "importance": result.importance,
+                "wx_room_name": result.wx_room_name,
+                "wx_room_id": result.wx_room_id,
+                "qq": result.qq,
+                "email": result.email,
+                "pcc": ["山西省--140000", "长治市--140400", "长治县--140421"],
+                "note": result.note,
+                "partners": result.partners[0].id
+            };
+
+            this.props.form.setFieldsValue(params);
+
+
+
+
         }
 
     }
@@ -147,9 +194,9 @@ class CreateMainBody extends React.Component {
 
     componentDidMount() {
         NProgress.done();
-        this.props.form.setFieldsValue({
-            "selectMainBody": this.state.value
-        })
+        // this.props.form.setFieldsValue({
+        //     "selectMainBody": this.state.value
+        // })
 
 
         var paramsSearch = {
@@ -175,10 +222,6 @@ class CreateMainBody extends React.Component {
 	 * @method newCustomerOk
 	 */
     newCustomerOk(e) {
-        console.log('确认新建客户');
-        // this.setState({
-        //     newCustomer: false
-        // });
 
 
         this.refs.create.props.onSubmit.call(this);
@@ -483,6 +526,7 @@ class CreateMainBody extends React.Component {
                 var params = {
                     "name": values.name,
                     "id_code": values.id_code,
+                    "selectMainBody": values.selectMainBody,
                     "phone": values.phone,
                     "province": values.pcc ? values.pcc[0].split('--')[0] : "",
                     "city": values.pcc ? values.pcc[1].split('--')[0] : "",
@@ -502,7 +546,7 @@ class CreateMainBody extends React.Component {
                 this.props.MainBodyActions.createMainBody(params);
 
 
-                this.props.form.resetFields();
+                // this.props.form.resetFields();
                 this.props.newCustomerOk(false);
                 this.props.refreshTable();
 
@@ -549,7 +593,6 @@ class CreateMainBody extends React.Component {
 
             <Modal
                 title="新建经营主体"
-                zIndex={this.props.zIndex}
                 visible={this.props.show}
                 onOk={this.newCustomerOk.bind(this)}
                 onCancel={this.newCustomerCannel.bind(this)}
@@ -563,6 +606,7 @@ class CreateMainBody extends React.Component {
 
                     {/*经营主体开始*/}
                     <FormItem label="经营主体">
+
 
                         {getFieldDecorator('selectMainBody', {
                             rules: [
@@ -670,11 +714,9 @@ class CreateMainBody extends React.Component {
                             </Col>
 
                             <Col span={12}>
-
-                                {this.props.zIndex != 1001 ? (<Button type="primary" onClick={() => {
+                                <Button type="primary" onClick={() => {
                                     this.props.open();
-                                }}>新建客户</Button>) : null}
-
+                                }}>新建客户</Button>
                             </Col>
                         </Row>
                     </FormItem>
@@ -707,7 +749,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // CustomerActions: bindActionCreators(actionCustomer, dispatch)
 };
 
-CreateMainBody = Form.create()(CreateMainBody);
+EditMainBody = Form.create()(EditMainBody);
 
 // export default compose(
 //     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
@@ -715,4 +757,4 @@ CreateMainBody = Form.create()(CreateMainBody);
 //     graphql(getBooksQuery, { name: "getBooksQuery" }),
 // )(CreateMainBody)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMainBody);
+export default connect(mapStateToProps, mapDispatchToProps)(EditMainBody);

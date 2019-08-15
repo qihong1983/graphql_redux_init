@@ -241,6 +241,16 @@ const Login = (location, cb) => {
 }
 
 
+// 用户管理 -- 用户列表 -- 修改用户
+const LoginCallback = (location, cb) => {
+	require.ensure([], require => {
+		cb(null,
+			require('../components/login/logincallback').default
+		)
+	}, 'loginCallback')
+}
+
+
 
 
 // 没有权限 
@@ -371,6 +381,10 @@ export default class Routers extends React.Component {
 			<div>
 				<Router history={this.props.history}>
 					<Route path="login" getComponent={Login} >
+
+					</Route>
+
+					<Route path="login-callback" getComponent={LoginCallback} >
 
 					</Route>
 

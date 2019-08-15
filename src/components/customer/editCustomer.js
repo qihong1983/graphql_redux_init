@@ -109,6 +109,9 @@ import {
 import * as actionCustomer from '../../actions/customer/customer';
 import * as actionMainBody from '../../actions/mainbody/mainbody';
 
+
+import _ from 'lodash';
+
 const footer = () => 'Here is footer';
 
 
@@ -127,7 +130,7 @@ import CreateMainBody from '../mainbody/createMainBody';
  * refreshTable 刷新表格数据
 */
 
-class CreateCustomer extends React.Component {
+class EditCustomer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -140,6 +143,89 @@ class CreateCustomer extends React.Component {
             mainBodyType: "company"
         }
 
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(this.props.Customer.detail, nextProps.Customer.detail)) {
+
+
+            var result = nextProps.Customer.detail.length == 0 ? null : nextProps.Customer.detail.result;
+            console.log(nextProps.Customer.detail, '坏的');
+
+
+
+            var data1 = {
+                "success": true,
+                "result": {
+                    "id": 1,
+                    "name": "门店名称",
+                    "abbreviation": "门店简称",
+                    "state": "客户状态",
+                    "level": "客户分级",
+                    "origin": "客户来源",
+                    "major_type": "经营类型",
+                    "auth_status": "认证状态",
+                    "phone": "联系电话",
+                    "province": "省",
+                    "city": "市",
+                    "county": "区",
+                    "location": "经纬度",
+                    "address": "详细地址",
+                    "area_code": "区域编码",
+                    "subject_type": "客户性质",
+                    "subject_id": "关联经营主体ID",
+                    "subject_name": "关联经营主体名称",
+                    "importance": "重要程度",
+                    "wx_room_name": "微信群名",
+                    "qq": "qq",
+                    "email": "邮箱",
+                    "note": "备注",
+                    "images": [
+                        {
+                            "id": "图片id",
+                            "url": "图片地址",
+                            "name": "上传时的文件名"
+                        }
+                    ],
+                    "files": [
+                        {
+                            "id": "图片id",
+                            "url": "图片地址",
+                            "name": "上传时的文件名"
+                        }
+                    ],
+                    "status": "状态",
+                    "created_at": "创建时间",
+                    "updated_at": "更新时间",
+                    "wx_room_id": ""
+                },
+                "errors": []
+            };
+
+
+
+            this.props.form.setFieldsValue({
+                "name": result.name,
+                "abbreviation": result.abbreviation,
+                "state": result.state,
+                "level": result.level,
+                "origin": result.origin,
+                "major_type": result.major_type,
+                "phone": result.phone,
+                "pcc": [result.province ? result.province : "", result.city ? result.city : "", result.county ? result.county : ""],
+                "location": "经纬度",
+                "address": result.address,
+                "area_code": result.area_code,
+                "subject_type": result.subject_type,
+                "subject_id": result.subject_id,
+                "importance": result.importance,
+                "wx_room_name": result.wx_room_name,
+                "wx_room_id": result.wx_room_id,
+                "qq": result.qq,
+                "email": result.email,
+                "note": result.note
+            });
+        }
     }
 
     componentWillMount() {
@@ -433,7 +519,7 @@ class CreateCustomer extends React.Component {
 
                 // createSubmit
 
-                this.props.form.resetFields();
+                // this.props.form.resetFields();
 
                 this.props.newCustomerOk(false);
                 this.props.refreshTable();
@@ -501,9 +587,6 @@ class CreateCustomer extends React.Component {
         const { TextArea } = Input;
 
 
-        console.log(JSON.stringify(this.props.Customer.selectParam), 'this.props.Customerthis.props.Customerthis.props.Customer');
-
-
 
 
 
@@ -512,18 +595,15 @@ class CreateCustomer extends React.Component {
 
             <div>
                 <Modal
-                    title="新建客户"
-                    zIndex={this.props.zIndex ? this.props.zIndex : 1000}
+                    title="编辑客户"
                     visible={this.props.show}
                     onOk={this.newCustomerOk.bind(this)}
                     onCancel={this.newCustomerCannel.bind(this)}
-                    footer={(<div><Button type="default" onClick={this.newCustomerCannel.bind(this)}>取消</Button><Button type="primary" onClick={this.newCustomerOk.bind(this)}>提交</Button></div>)
-                    }
-                    cancelText={< Button > 取消1</Button>}
+                    footer={(<div><Button type="default" onClick={this.newCustomerCannel.bind(this)}>取消</Button><Button type="primary" onClick={this.newCustomerOk.bind(this)}>提交</Button></div>)}
+                    cancelText={< Button > 取消</Button>}
                     width={628}
                 >
                     <Form {...formItemLayout} onSubmit={this.handleSubmit} ref="create" >
-
 
                         {/*公司名称开始*/}
                         <FormItem label="公司名称">
@@ -781,11 +861,9 @@ class CreateCustomer extends React.Component {
 
                                 </Col>
                                 <Col span={8}>
-
-                                    {this.props.zIndex != 1001 ? (<Button type="primary" onClick={() => {
+                                {this.props.zIndex != 1001 ? (<Button type="primary" onClick={() => {
                                         this.props.open();
                                     }}>新建经营主体</Button>) : null}
-
                                 </Col>
                             </Row>
                         </FormItem>
@@ -928,7 +1006,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 };
 
-CreateCustomer = Form.create()(CreateCustomer);
+EditCustomer = Form.create()(EditCustomer);
 
 // export default compose(
 //     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
@@ -936,4 +1014,4 @@ CreateCustomer = Form.create()(CreateCustomer);
 //     graphql(getBooksQuery, { name: "getBooksQuery" }),
 // )(CreateCustomer)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateCustomer);
+export default connect(mapStateToProps, mapDispatchToProps)(EditCustomer);

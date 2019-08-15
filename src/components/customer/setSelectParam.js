@@ -336,13 +336,18 @@ class SetSelectParam extends React.Component {
     }
 
     /**
- * 客户管理 -- 列表字段设置 -- 确认
- * @method paramsListOk
- */
+     * 客户管理 -- 列表字段设置 -- 确认
+     * @method paramsListOk
+     */
     paramsListOk() {
         // this.setState({
         //     paramsListVisible: false
         // });
+
+
+        this.props.setSelectParam(this.state.targetKeys, this.props.Customer.selectParam);
+
+        // this.props.setSelectParam
 
         this.props.paramsListOk();
     }
@@ -372,6 +377,8 @@ class SetSelectParam extends React.Component {
         console.log('targetKeys: ', nextTargetKeys);
         console.log('direction: ', direction);
         console.log('moveKeys: ', moveKeys);
+
+
     };
 
     handleSelectChangeParamList(sourceSelectedKeys, targetSelectedKeys) {

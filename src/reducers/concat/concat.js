@@ -12,7 +12,9 @@ const Concat = (state, action) => {
         return {
             selectParam: [],
             table: [],
-            columns: []
+            columns: [],
+            detail: [],
+            wxNames: []
         };
     }
 
@@ -36,7 +38,17 @@ const Concat = (state, action) => {
                 columns: action.payload
             })
 
-        // columns1
+        case "CONCAT_DETAIL":
+            return Object.assign({}, state, {
+                detail: action.payload
+            })
+
+        case "CONCAT_WXNAMES":
+            return Object.assign({}, state, {
+                wxNames: action.payload
+            })
+
+        // wxNames
 
 
 

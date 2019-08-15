@@ -104,7 +104,7 @@ import {
     addKey
 } from '../../common/utils';
 
-// import * as actionCreators from '../../actions/allTrend/allTrend';
+import * as actionCreators from '../../actions/mainbody/mainbody';
 
 const footer = () => 'Here is footer';
 
@@ -137,6 +137,12 @@ class MainBodyDrawer extends React.Component {
 
     }
 
+    componentWillReceiveProps(newProps) {
+        console.log(newProps.mainBody.selectParam, 'newPropsnewPropsnewProps');
+
+        console.log(newProps, 'newPropsnewPropsnewProps***');
+    }
+
     componentWillMount() {
         NProgress.start();
     }
@@ -147,14 +153,16 @@ class MainBodyDrawer extends React.Component {
 
     }
 
-
+    openEditMainBody() {
+        this.props.openEditMainBody();
+    }
     DrawerHeader() {
         return (<div className="clearfix">
             <div className="pull-left">
                 公司详情
 			</div>
             <div className="pull-right">
-                <Button type="primary">
+                <Button type="primary" onClick={this.openEditMainBody.bind(this)}>
                     编辑
 				</Button>
             </div>
@@ -168,6 +176,107 @@ class MainBodyDrawer extends React.Component {
         // });
 
         this.props.onCloseDrawer();
+    }
+
+    getListImage(data) {
+        var arr = [];
+
+        data.map((v, k) => {
+            arr.push(<img src={v.url} title={v.name} ></img>);
+        });
+
+        return arr;
+    }
+
+    getListFile(data) {
+        var arr = [];
+        data.map((v, k) => {
+            arr.push(<span><a href={v.url}>{v.name}</a><br /></span>);
+        })
+
+        return arr;
+    }
+
+    renderDetail() {
+        if (this.props.mainBody.detail.success) {
+
+            var detail = this.props.mainBody.detail.result;
+            return (<div>
+                <p>
+                    公司名称/姓名: {detail.name}
+                </p>
+
+                <p>
+                    税号/身份证号: {detail.id_code}
+                </p>
+
+                <p>
+                    联系电话: {detail.phone}
+                </p>
+
+                <p>
+                    省: {detail.province}
+                </p>
+                <p>
+                    市: {detail.city}
+                </p>
+                <p>
+                    区: {detail.county}
+                </p>
+
+                <p>
+                    经纬度: {detail.location}
+                </p>
+
+                <p>
+                    详细地址: {detail.address}
+                </p>
+
+
+                <p>
+                    区域编码: {detail.area_code}
+                </p>
+
+
+                <p>
+                    邮箱: {detail.email}
+                </p>
+
+                <p>
+                    备注: {detail.note}
+                </p>
+
+                <p>
+                    类型: {detail.type}
+                </p>
+
+
+                <p>
+                    是否是集团: {detail.is_group}
+                </p>
+
+
+                <p>
+                    是否是总公司: {detail.is_main}
+                </p>
+
+                <p>
+                    父级公司名称: {detail.parent_subject_name}
+                </p>
+
+                <p>
+                    图片: {this.getListImage(detail.images)}
+                </p>
+
+                <p>
+                    文件: {this.getListFile(detail.files)}
+                </p>
+
+            </div>)
+
+        }
+
+
     }
 
 
@@ -236,7 +345,9 @@ class MainBodyDrawer extends React.Component {
                     visible={this.props.drawerVisible}
                 >
 
-                    <p>公司详情</p>
+                    {this.renderDetail()}
+
+                    {/* <p>公司详情</p>
 
                     <p>姓名：张李赵</p>
 
@@ -255,7 +366,7 @@ class MainBodyDrawer extends React.Component {
 
                     <p>图片：</p>
 
-                    <p>文件：</p>
+                    <p>文件：</p> */}
                 </Drawer>
 
 
@@ -266,25 +377,25 @@ class MainBodyDrawer extends React.Component {
 }
 
 
-//将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+// redux
+const mapStateToProps = (state) => {
+    return {
+        mainBody: state.Reducer.mainBody
+    }
+};
 
 // //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
 MainBodyDrawer = Form.create()(MainBodyDrawer);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(MainBodyDrawer)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(MainBodyDrawer)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(MainBodyDrawer);

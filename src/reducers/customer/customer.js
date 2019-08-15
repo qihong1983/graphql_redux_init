@@ -12,7 +12,10 @@ const Customer = (state, action) => {
         return {
             selectParam: [],
             table: [],
-            columns: []
+            columns: [],
+            detail: [],
+            searchName: [],
+            searchWxClassName: []
         };
     }
 
@@ -35,7 +38,27 @@ const Customer = (state, action) => {
             return Object.assign({}, state, {
                 columns: action.payload
             })
+        case "CUSTOMER_DETAIL":
+            return Object.assign({}, state, {
+                detail: action.payload
+            })
 
+        case "CUSTOMER_SEARCHNAME":
+            return Object.assign({}, state, {
+                searchName: action.payload
+            })
+
+        case "CUSTOMER_SEARCHWXCLASSNAME":
+            return Object.assign({}, state, {
+                searchWxClassName: action.payload
+            })
+
+        
+        // searchWxClassName
+
+        // searchName
+
+        // detail
         // columns1
 
 

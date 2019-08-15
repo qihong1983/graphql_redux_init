@@ -87,6 +87,8 @@ import Area from '../../common/area';
 import 'moment/locale/zh-cn';
 Moment.locale('zh-cn');
 
+import _ from 'lodash';
+
 const thunk = require('redux-thunk').default;
 
 const {
@@ -129,7 +131,7 @@ function onShowSizeChange(current, pageSize) {
  * refreshTable 刷新表格数据
 */
 
-class CreateContact extends React.Component {
+class EditContact extends React.Component {
 
     constructor(props) {
         super(props);
@@ -141,6 +143,84 @@ class CreateContact extends React.Component {
         }
 
     }
+
+
+    componentWillReceiveProps(nextProps) {
+
+
+        if (!_.isEqual(this.props.Concat.detail, nextProps.Concat.detail)) {
+
+            var result = nextProps.Concat.detail.length == 0 ? null : nextProps.Concat.detail.result;
+
+            var data11 = {
+                "success": true,
+                "result": {
+                    "id": 702,
+                    "name": "lsykjh",
+                    "phone": 21000,
+                    "partner_id": 491,
+                    "partner_name": "gbohzk",
+                    "province": "江西省",
+                    "city": "天津市",
+                    "county": "华南",
+                    "location": "105.7.198.140",
+                    "address": "华南",
+                    "area_code": 31000,
+                    "wx_name": "xvnnui",
+                    "wx_id": "ouadhx",
+                    "email": "n.usgd@gkmccwtpv.zm",
+                    "qq": 530,
+                    "title": "jqkmui",
+                    "rank": "asbrdv",
+                    "importance": "alftyp",
+                    "decision": "ihkrmf",
+                    "affinity": "stjano",
+                    "gender": "lqffrq",
+                    "birthday": {
+                        "type": "公历/阴历",
+                        "date": "1999-12-08 08:40:39"
+                    },
+                    "note": "如两主地比严强证今同身非劳解水思须。大其议带也问过素约千原种江确边线他年。们少划带些更被且切西制能任建。素和万斯志志只影九那心也置级规。被际必社你据毛发政需位按将要马。",
+                    "status": false,
+                    "created_at": "1999-12-08 08:40:39",
+                    "updated_at": "2009-03-06 12:20:43"
+                },
+                "errors": []
+            }
+
+
+            console.log(result.note, '**************^^^^^^^^');
+            // "partner_id": result.partner_id,
+
+
+            this.props.form.setFieldsValue({
+                "name": result.name,
+                "phone": result.phone,
+                "partner_id": result.partner_id,
+                "province": result.province ? result.province : "",
+                "city": result.city ? result.city : "",
+                "county": result.county ? result.county : "",
+                "location": result.location ? result.location : "",
+                "address": result.address ? result.address : "",
+                "area_code": result.area_code ? result.area_code : "",
+                "wx_name": result.wx_name ? result.wx_name : "",
+                "wx_id": result.wx_id ? result.wx_id : "",
+                "email": result.email ? result.email : "",
+                "qq": result.qq ? result.qq : "",
+                "title": result.title ? result.title : "",
+                "rank": result.rank ? result.rank : "",
+                "importance": result.importance ? result.importance : "",
+                "decision": result.decision ? result.decision : "",
+                "affinity": result.affinity ? result.affinity : "",
+                "gender": result.gender ? result.gender : "",
+                "date": moment(new Date(result.birthday.date)),
+                "note": result.note,
+                "pcc": [result.province ? result.province : "", result.city ? result.city : "", result.county ? result.county : ""]
+            });
+        }
+
+    }
+
 
     componentWillMount() {
         NProgress.start();
@@ -155,11 +235,12 @@ class CreateContact extends React.Component {
         this.props.CustomerActions.searchName(params);
 
 
-        var params = {
+
+        var wxParams = {
             name: ""
         };
 
-        this.props.ContactActions.getWxNames(params);
+        this.props.ContactActions.getWxNames(wxParams);
     }
 
 	/**
@@ -280,8 +361,6 @@ class CreateContact extends React.Component {
                 // wx_name: 302
 
                 var paramsWxName = this.paramsWxName(values.wx_name ? values.wx_name : "");
-
-
                 var countyCode = values.pcc ? values.pcc[2].split("--")[1] : "";
 
                 console.log(moment(values.date).format("YYYY-MM-DD hh:mm:ss"));
@@ -313,7 +392,10 @@ class CreateContact extends React.Component {
                     "note": values.note
                 }
 
-                this.props.ContactActions.createContact(params);
+
+                console.log(params, 'paramsparamsparamsparams');
+
+                this.props.ContactActions.editContact(values.id, params);
 
                 this.props.newCustomerOk(false);
                 this.props.refreshTable();
@@ -333,15 +415,24 @@ class CreateContact extends React.Component {
 
     renderPartnerOption() {
 
-        console.log(this.props.Customer.searchName, 'this.props.Customer.searchName');
+        var result = this.props.Concat.detail.length == 0 ? null : this.props.Concat.detail.result;
 
         var arr = [];
+
+        if (result) {
+            arr.push(<Option value={result.partner_id}>{result.partner_name}</Option>);
+        }
+
+
         if (this.props.Customer.searchName.length) {
+
             // "id": "@natural(100, 999)",
             // "name": "@word(6)"
+
             this.props.Customer.searchName.map((v, k) => {
                 arr.push(<Option value={v.id}>{v.name}</Option>)
             })
+
         }
 
         return arr;
@@ -407,6 +498,9 @@ class CreateContact extends React.Component {
 
 
         var arr = [];
+
+
+
         if (this.props.Concat.wxNames.length) {
 
             this.props.Concat.wxNames.map((v, k) => {
@@ -456,60 +550,63 @@ class CreateContact extends React.Component {
         };
 
 
-        console.log(JSON.stringify(Area), 'AreaAreaAreaArea');
-
 
         var optionsTmp = this.digui(Area);
-
-        console.log(optionsTmp, 'optionsTmpoptionsTmpoptionsTmp');
 
 
         const options = optionsTmp;
 
-        // const options = [
-        //     {
-        //         value: 'zhejiang',
-        //         label: 'Zhejiang',
-        //         children: [
-        //             {
-        //                 value: 'hangzhou',
-        //                 label: 'Hangzhou',
-        //                 children: [
-        //                     {
-        //                         value: 'xihu',
-        //                         label: 'West Lake',
-        //                     },
-        //                 ],
-        //             },
-        //         ],
-        //     },
-        //     {
-        //         value: 'jiangsu',
-        //         label: 'Jiangsu',
-        //         children: [
-        //             {
-        //                 value: 'nanjing',
-        //                 label: 'Nanjing',
-        //                 children: [
-        //                     {
-        //                         value: 'zhonghuamen',
-        //                         label: 'Zhong Hua Men',
-        //                     },
-        //                 ],
-        //             },
-        //         ],
-        //     },
-        // ];
-
 
         const { TextArea } = Input;
 
-        console.log(this.props.Concat, 'this.props.Concatthis.props.Concatthis.props.Concat');
+
+        console.log(JSON.stringify(this.props.Concat.detail), 'this.props.Concatthis.props.Concatthis.props.Concat');
+
+        var data11 = {
+            "success": true,
+            "result": {
+                "id": 702,
+                "name": "lsykjh",
+                "phone": 21000,
+                "partner_id": 491,
+                "partner_name": "gbohzk",
+                "province": "江西省",
+                "city": "天津市",
+                "county": "华南",
+                "location": "105.7.198.140",
+                "address": "华南",
+                "area_code": 31000,
+                "wx_name": "xvnnui",
+                "wx_id": "ouadhx",
+                "email": "n.usgd@gkmccwtpv.zm",
+                "qq": 530,
+                "title": "jqkmui",
+                "rank": "asbrdv",
+                "importance": "alftyp",
+                "decision": "ihkrmf",
+                "affinity": "stjano",
+                "gender": "lqffrq",
+                "birthday": {
+                    "type": "公历/阴历",
+                    "date": "生日"
+                },
+                "note": "如两主地比严强证今同身非劳解水思须。大其议带也问过素约千原种江确边线他年。们少划带些更被且切西制能任建。素和万斯志志只影九那心也置级规。被际必社你据毛发政需位按将要马。",
+                "status": false,
+                "created_at": "1999-12-08 08:40:39",
+                "updated_at": "2009-03-06 12:20:43"
+            },
+            "errors": []
+        }
+
+        // this.props.form.
+
+
+
 
         return (
 
             <Modal
-                title="新建联系人"
+                title="编辑联系人"
                 visible={this.props.show}
                 onOk={this.newCustomerOk.bind(this)}
                 onCancel={this.newCustomerCannel.bind(this)}
@@ -587,7 +684,7 @@ class CreateContact extends React.Component {
                             </Col>
 
                             <Col span={12}>
-                                <Button type="primary" onClick={()=> {
+                                <Button type="primary" onClick={()=>{
                                     this.props.open();
                                 }}>新建客户</Button>
                             </Col>
@@ -608,6 +705,9 @@ class CreateContact extends React.Component {
                         })(
                             <Cascader options={options} onChange={this.onChangeCascader.bind(this)} placeholder="请选择省、市、区" />
                         )}
+
+
+
                     </FormItem>
                     {/* 地址结束 */}
 
@@ -789,7 +889,7 @@ class CreateContact extends React.Component {
 
                     {/*备注开始*/}
                     <FormItem label="备注">
-                        {getFieldDecorator('reduce', {
+                        {getFieldDecorator('note', {
 
                         })(
                             <TextArea rows={4} />
@@ -822,7 +922,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 };
 
-CreateContact = Form.create()(CreateContact);
+EditContact = Form.create()(EditContact);
 
 // export default compose(
 //     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
@@ -830,4 +930,4 @@ CreateContact = Form.create()(CreateContact);
 //     graphql(getBooksQuery, { name: "getBooksQuery" }),
 // )(CreateContact)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateContact);
+export default connect(mapStateToProps, mapDispatchToProps)(EditContact);

@@ -7,6 +7,7 @@
     "babel-preset-react": "^6.24.1",
     "copy-to-clipboard": "^3.0.8",
     "cross-env": "^5.1.3",
+    "ddlogin-react": "~0.1.8",
     "graphql": "^14.4.2",
     "history": "~4.7.2",
     "taffy": "^2.6.2"
@@ -33,6 +34,7 @@
     "cssnano": "~3.10.0",
     "cssnext": "~1.8.4",
     "echarts": "~3.8.4",
+    "express": "~4.17.1",
     "extract-text-webpack-plugin": "~2.0.0",
     "file-loader": "~0.8.5",
     "history": "~1.0.0",

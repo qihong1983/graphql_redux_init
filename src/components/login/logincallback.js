@@ -107,7 +107,7 @@ import {
     addKey
 } from '../../common/utils';
 
-// import * as actionCreators from '../../actions/allTrend/allTrend';
+import * as actionCreators from '../../actions/customer/customer';
 
 const footer = () => 'Here is footer';
 
@@ -127,7 +127,7 @@ import CreateMainBody from '../mainbody/createMainBody';
  * refreshTable 刷新表格数据
 */
 
-class Login extends React.Component {
+class LoginCallback extends React.Component {
 
     constructor(props) {
         super(props);
@@ -279,15 +279,7 @@ class Login extends React.Component {
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
                 { /*筛选区域开始*/}
                 <Content className="login_filter">
-                    <Card
-                        extra={<Radio.Group value={this.state.loginType} onChange={this.changeLoginType.bind(this)}>
-                            <Radio.Button value="accountLogin">帐号登录</Radio.Button>
-                            <Radio.Button value="qrcodeLogin">扫码登录</Radio.Button>
-                        </Radio.Group>}
-                        actions={this.state.loginType == "accountLogin" ? [<Button type="primary">登录</Button>] : ""}
-                    >
-                        {this.state.loginType == "accountLogin" ? this.renderAccountLogin() : this.renderQrcodeLogin()}
-                    </Card>
+                    1111
                 </Content>
                 { /*筛选区域结束*/}
             </Layout>
@@ -297,24 +289,24 @@ class Login extends React.Component {
 
 
 //将state.counter绑定到props的counter
-// const mapStateToProps = (state) => {
-// 	return {
-// 		allTrend: state.Reducer.allTrend
-// 	}
-// };
+const mapStateToProps = (state) => {
+    return {
+        reducer: state.Reducer
+    }
+};
 
-// //将action的所有方法绑定到props上
-// const mapDispatchToProps = (dispatch, ownProps) => {
-// 	//全量
-// 	return bindActionCreators(actionCreators, dispatch);
-// };
+//将action的所有方法绑定到props上
+const mapDispatchToProps = (dispatch, ownProps) => {
+    //全量
+    return bindActionCreators(actionCreators, dispatch);
+};
 
-Login = Form.create()(Login);
+LoginCallback = Form.create()(LoginCallback);
 
-export default compose(
-    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
-    graphql(addBookMutation, { name: "addBookMutation" }),
-    graphql(getBooksQuery, { name: "getBooksQuery" }),
-)(Login)
+// export default compose(
+//     graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+//     graphql(addBookMutation, { name: "addBookMutation" }),
+//     graphql(getBooksQuery, { name: "getBooksQuery" }),
+// )(Login)
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginCallback);

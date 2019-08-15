@@ -10,7 +10,8 @@ import React from 'react';
 import reqwest from 'reqwest';
 
 import {
-	notification
+	notification,
+	message
 } from 'antd';
 
 
@@ -144,7 +145,158 @@ const getTableData = (data) => {
 }
 
 
+const detailFn = (data) => {
+	return async function (dispatch) {
+
+		var options = {};
+
+		var url = '';
+
+		if (window.location.search.indexOf("debug") > 0 || window.location.search.indexOf("web_ci") > 0) {
+
+			url = `http://xxx.mock.com/crm/subject/1`;
+
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true
+			}
+
+		} else {
+
+			url = `http://xxx.mock.com/crm/subject/${data}`;
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true,
+				data: data
+			}
+		}
+
+
+		await reqwest(options).then(async (msg) => {
+
+
+			console.log(msg, 'table');
+
+			if (msg.success) {
+
+				console.log(msg, '详情页面');
+				await dispatch({
+					type: "MAINBODY_DETAIL",
+					payload: msg
+				});
+			} else {
+				message.error(msg.errors);
+			}
+
+		});
+	}
+}
+
+
+const searchName = (data) => {
+
+	return async function (dispatch) {
+
+		var options = {};
+
+		var url = '';
+
+		if (window.location.search.indexOf("debug") > 0 || window.location.search.indexOf("web_ci") > 0) {
+
+			url = `http://xxx.mock.com/crm/subject/name-search`;
+
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true
+			}
+
+		} else {
+
+			url = `http://xxx.mock.com/crm/subject/name-search`;
+
+			options = {
+				url: url,
+				method: 'get',
+				type: 'json',
+				cache: true,
+				data: data
+			}
+		}
+
+		await reqwest(options).then(async (msg) => {
+
+			if (msg.success) {
+
+
+
+				console.log(msg, '<---------这个是搜索的');
+
+				await dispatch({
+					type: "MAINBODY_SEARCHNAME",
+					payload: msg.result
+				});
+
+			} else {
+				message.error(msg.errors);
+			}
+
+		});
+	}
+}
+
+
+const createMainBody = (data) => {
+	return async function (dispatch) {
+		var options = {};
+
+		var url = '';
+
+		if (window.location.search.indexOf("debug") > 0 || window.location.search.indexOf("web_ci") > 0) {
+
+			url = `http://xxx.mock.com/crm/partner/create`;
+
+			options = {
+				url: url,
+				method: 'post',
+				type: 'json',
+				cache: true
+			}
+
+		} else {
+
+			url = `http://xxx.mock.com/crm/partner/create`;
+
+			options = {
+				url: url,
+				method: 'post',
+				type: 'json',
+				cache: true,
+				data: data
+			}
+		}
+
+		await reqwest(options).then(async (msg) => {
+
+			if (msg.success) {
+				message.success("创建成功");
+			} else {
+				message.error(msg.errors);
+			}
+
+		});
+	}
+}
+
 export {
 	getSelectParam,
-	getTableData
+	getTableData,
+	detailFn,
+	searchName,
+	createMainBody
 }

@@ -12,7 +12,9 @@ const mainBody = (state, action) => {
 		return {
 			selectParam: [],
 			table: [],
-			columns: []
+			columns: [],
+			detail: [],
+			searchName: []
 		};
 	}
 
@@ -39,10 +41,19 @@ const mainBody = (state, action) => {
 				columns: action.payload
 			});
 
-		// columns1
+		case "MAINBODY_DETAIL":
+			//经营主体-- 表格
+			return Object.assign({}, state, {
+				detail: action.payload
+			});
 
+		case "MAINBODY_SEARCHNAME":
+			//经营主体-- 表格
+			return Object.assign({}, state, {
+				searchName: action.payload
+			});
 
-
+		// searchName
 
 		default:
 			//返回初始化

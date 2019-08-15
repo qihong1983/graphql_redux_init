@@ -158,19 +158,24 @@ class CustomerDrawer extends React.Component {
     }
 
 
+    openEditCustomer() {
+        this.props.openEditCustomer();
+    }
+
     DrawerHeader() {
         return (<div className="clearfix">
             <div className="pull-left">
-                北京市海淀汽修
-			</div>
+                {this.props.Customer.detail.length != 0 ? this.props.Customer.detail.result.name : ""}
+            </div>
             <div className="pull-right">
-                <Button type="primary">
+
+                {this.props.noEdit ? null : (<Button type="primary" onClick={this.openEditCustomer.bind(this)}>
                     编辑
-				</Button>
+				</Button>)}
+
             </div>
         </div>)
     }
-
 
     onCloseDrawer() {
         // this.setState({
@@ -178,6 +183,72 @@ class CustomerDrawer extends React.Component {
         // });
 
         this.props.onCloseDrawer();
+    }
+
+
+    renderImages(data) {
+
+        var arr = [];
+
+        data.map((v, k) => {
+            arr.push(<img src={v.url} title={v.name} alt={v.name} />)
+        })
+
+        return arr;
+    }
+
+    renderFiles(data) {
+        var arr = [];
+
+        data.map((v, k) => {
+            arr.push(<span><a href={v.url}>{v.name}</a><br /></span>);
+        })
+
+        return arr;
+    }
+
+    renderDetail() {
+        // console.log(this.props.Customer.detail, '详情页详情页详情页');
+        var detail = this.props.Customer.detail.result;
+
+
+        console.log(detail, 'detaildetaildetaildetail');
+        if (detail != undefined) {
+            return (<div>
+
+                <p>门店名称: {detail.name}</p>
+                <p>门店简称: {detail.abbreviation}</p>
+                <p>客户状态: {detail.state}</p>
+                <p>客户分级: {detail.level}</p>
+                <p>客户来源: {detail.origin}</p>
+
+
+                <p>经营类型: {detail.major_type}</p>
+                <p>认证状态: {detail.auth_status}</p>
+                <p>联系电话: {detail.phone}</p>
+                <p>省: {detail.province}</p>
+                <p>市: {detail.city}</p>
+                <p>区: {detail.county}</p>
+                <p>经纬度: {detail.location}</p>
+                <p>详细地址: {detail.address}</p>
+                <p>区域编码: {detail.area_code}</p>
+
+
+
+
+                <p>客户性质: {detail.subject_type}</p>
+                <p>关联经营主体名称: {detail.subject_name}</p>
+                <p>重要程度: {detail.importance}</p>
+                <p>微信群名: {detail.wx_room_name}</p>
+                <p>qq: {detail.qq}</p>
+                <p>邮箱: {detail.email}</p>
+                <p>备注: {detail.note}</p>
+                <p>备注: {this.renderImages(detail.images)}</p>
+                <p>备注: {this.renderFiles(detail.files)}</p>
+
+            </div>)
+        }
+
     }
 
 
@@ -245,7 +316,9 @@ class CustomerDrawer extends React.Component {
                     onClose={this.onCloseDrawer.bind(this)}
                     visible={this.props.drawerVisible}
                 >
-                    <p>公司名称：北京海淀汽修</p>
+
+                    {this.renderDetail()}
+                    {/* <p>公司名称：北京海淀汽修</p>
                     <p>公司简称：---</p>
                     <p>客户状态：潜在客户</p>
                     <p>客户分级：一类维修厂</p>
@@ -258,7 +331,7 @@ class CustomerDrawer extends React.Component {
                     <p>--------(主体信息）</p>
                     <p>认证状态：未认证</p>
                     <p>重要程度：五星</p>
-                    <p>微信群名：---</p>
+                    <p>微信群名：---</p> */}
                 </Drawer>
 
 

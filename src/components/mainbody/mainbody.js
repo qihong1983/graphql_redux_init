@@ -53,6 +53,8 @@ const TabPane = Tabs.TabPane;
 
 const { Meta } = Card;
 
+
+
 import {
     getDownloadName,
     downloadExcle,
@@ -114,12 +116,18 @@ import * as actionCreators from '../../actions/mainbody/mainbody';
 
 
 
+//创建 
 import CreateMainBody from './createMainBody';
+
+//修改
+import EditMainBody from './editMainBody';
 
 import MainBodyDrawer from './mainBodyDrawer';
 
 import MoreEdit from './moreEdit';
 
+//新建客户
+import CreateCustomer from '../customer/createCustomer';
 
 class MainBody extends React.Component {
 
@@ -159,6 +167,11 @@ class MainBody extends React.Component {
             newCustomer: false,
             //个人
             newCustomerPerson: false,
+
+            //客户管理  -- 新建
+            customerVisible: false,
+            //编辑显示控制
+            editMainBodyVisible: false,
             mainBodyType: 1,
             drawerVisible: false,
             moreEditVisible: false,
@@ -175,7 +188,8 @@ class MainBody extends React.Component {
             provinceArr: [],
             cityArr: [],
             countyArr: [],
-            moreRows: []
+            moreRows: [],
+            detailId: ""
         }
 
     }
@@ -413,12 +427,56 @@ class MainBody extends React.Component {
         });
     }
 
+
+
+    editMainBodyOk(data) {
+        this.setState({
+            editMainBodyVisible: data
+        })
+    }
+
+    editMainBodyCannel(data) {
+        this.setState({
+            editMainBodyVisible: data
+        })
+    }
+
+
+
+    openEditMainBody() {
+        this.setState({
+            editMainBodyVisible: true
+        });
+    }
+
     /**
      * 新建客户端  -- 刷新列表
      * @method refreshTable
      */
     refreshTable() {
         console.log('刷新列表');
+
+        this.setState({
+            page: 1
+        }, () => {
+            this.getTable();
+        })
+
+    }
+
+    /**
+     * 编辑客户
+     */
+    editRefreshTable() {
+        this.setState({
+            page: 1
+        }, () => {
+            this.getTable();
+
+
+            this.props.detailFn(this.state.detailId);
+
+        })
     }
 
     onCloseDrawer() {
@@ -427,9 +485,13 @@ class MainBody extends React.Component {
         });
     }
 
-    openDrawer() {
+    openDrawer(e) {
+        console.log(e.target.dataset.id, 'eeeeeeeeee');
         this.setState({
+            detailId: e.target.dataset.id,
             drawerVisible: true
+        }, () => {
+            this.props.detailFn(this.state.detailId);
         });
     }
 
@@ -809,6 +871,32 @@ class MainBody extends React.Component {
 
     }
 
+
+    /**
+     * 新建客户
+     */
+    createCustomerOk() {
+        this.setState({
+            customerVisible: false
+        })
+    }
+
+    createCustomerCannel() {
+        this.setState({
+            customerVisible: false
+        })
+    }
+
+    createRefreshTable() {
+        console.log('刷新');
+    }
+
+    createCustomer() {
+        this.setState({
+            customerVisible: true
+        })
+    }
+
     render() {
 
         const {
@@ -976,6 +1064,26 @@ class MainBody extends React.Component {
         return (
             <Layout style={{ position: "relative", marginTop: 60, overflow: "hidden" }}>
 
+                {/**
+                    //新建客户
+					show 控制是否显示隐藏
+					newCustomerOk 确定提交
+					newCustomerCannel 取消提交
+					refreshTable 刷新表格数据
+				*/}
+                <CreateCustomer
+                    zIndex={1001}
+                    show={this.state.customerVisible}
+                    newCustomerOk={this.createCustomerOk.bind(this)}
+                    newCustomerCannel={this.createCustomerCannel.bind(this)}
+                    refreshTable={this.createRefreshTable.bind(this)}
+                    open={this.openEditMainBody.bind(this)}
+                />
+
+
+
+
+
                 {/* 批量编辑开始 */}
                 <MoreEdit
                     moreEditVisible={this.state.moreEditVisible}
@@ -999,7 +1107,20 @@ class MainBody extends React.Component {
                     newCustomerCannel={this.newCustomerCannel.bind(this)}
                     refreshTable={this.refreshTable.bind(this)}
                     mainBodyType={this.state.mainBodyType}
+                    open={this.createCustomer.bind(this)}
                 />
+
+
+                {/* 编辑 */}
+                <EditMainBody
+                    show={this.state.editMainBodyVisible}
+                    newCustomerOk={this.editMainBodyOk.bind(this)}
+                    newCustomerCannel={this.editMainBodyCannel.bind(this)}
+                    refreshTable={this.editRefreshTable.bind(this)}
+                    mainBodyType={this.state.mainBodyType}
+                    open={this.createCustomer.bind(this)}
+                />
+
 
                 {/* <CreateMainBodyPerson
                     show={this.state.newCustomerPerson}
@@ -1011,8 +1132,10 @@ class MainBody extends React.Component {
                  * 抽屉--联系人
                  */}
                 <MainBodyDrawer
+                    detailId={this.state.detailId}
                     onCloseDrawer={this.onCloseDrawer.bind(this)}
                     drawerVisible={this.state.drawerVisible}
+                    openEditMainBody={this.openEditMainBody.bind(this)}
                 />
 
                 {/* 新建经营主体结束 */}
@@ -1058,7 +1181,8 @@ class MainBody extends React.Component {
 //将state.counter绑定到props的counter
 const mapStateToProps = (state) => {
     return {
-        mainBody: state.Reducer.mainBody
+        mainBody: state.Reducer.mainBody,
+        Customer: state.Reducer.Customer
     }
 };
 

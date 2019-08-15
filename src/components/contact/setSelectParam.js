@@ -342,6 +342,12 @@ class SetSelectParam extends React.Component {
         //     paramsListVisible: false
         // });
 
+
+        console.log(this.state.targetKeys, this.props.Concat.selectParam, '***');
+
+
+        this.props.setSelectParam(this.state.targetKeys, this.props.Concat.selectParam);
+
         this.props.paramsListOk();
     }
 

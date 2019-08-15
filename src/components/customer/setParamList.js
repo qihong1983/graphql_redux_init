@@ -165,6 +165,7 @@ class SetParamList extends React.Component {
             if (v.is_table_show) {
                 arr2.push(v.name)
             }
+
             arr.push({
                 "key": v.name,
                 "title": v.display,
@@ -335,13 +336,21 @@ class SetParamList extends React.Component {
     }
 
     /**
- * 客户管理 -- 列表字段设置 -- 确认
- * @method paramsListOk
- */
+     * 客户管理 -- 列表字段设置 -- 确认
+     * @method paramsListOk
+     */
     paramsListOk() {
         // this.setState({
         //     paramsListVisible: false
         // });
+
+        // console.log(this.state.targetKeys, 'targetKeys');
+
+        this.props.setTableParams(this.state.targetKeys, this.props.Customer.selectParam);
+
+
+
+
 
         this.props.paramsListOk();
     }
